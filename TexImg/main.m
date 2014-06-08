@@ -1,8 +1,8 @@
 //
 //  main.m
-//  TexImg
+//  map3d
 //
-//  Created by Sopan, Awalin on 5/28/14.
+//  Created by Sopan, Awalin on 5/7/14.
 //  Copyright (c) 2014 __mstr__. All rights reserved.
 //
 
