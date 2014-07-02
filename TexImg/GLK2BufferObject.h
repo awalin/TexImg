@@ -12,12 +12,14 @@
 
 @property(nonatomic, readonly) GLuint glName;
 @property GLsizei totalBytesPerItem;
+@property GLenum usageHint;
+@property int items;
 
 @property(nonatomic) GLenum glBufferType; // = GL_ARRAY_BUFFER
 
 -(void) upload:(void *) dataArray numItems:(int) count usageHint:(GLenum) usage ;
 
 +(GLK2BufferObject*) vertexBufferObject;
-
+-(void) update: (void *) dataArray;
 
 @end

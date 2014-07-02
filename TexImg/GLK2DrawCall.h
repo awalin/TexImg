@@ -3,6 +3,7 @@
 
 
 @class GLKVAObject;
+@class TexImgFrameBuffer;
 
 
 @interface GLK2DrawCall : NSObject
@@ -12,6 +13,7 @@
 
 
 @property(nonatomic,retain) GLKVAObject* VAO;
+@property(nonatomic,retain) TexImgFrameBuffer* frameBuffer;
 
 /** Every draw call MUST have a shaderprogram, or else it cannot draw objects nor pixels */
 //@property(nonatomic,retain) GLK2ShaderProgram* shaderProgram;
@@ -25,5 +27,7 @@
 -(float*) clearColourArray;
 -(void) setClearColourRed:(float) r green:(float) g blue:(float) b alpha:(float) a;
 -(void) drawWithMode:(GLuint) mode;
+
+-(void) drawInFrmeBuffer:(GLuint) mode;
 
 @end

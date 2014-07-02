@@ -10,12 +10,10 @@
 #import <Foundation/Foundation.h>
 @class GLK2BufferObject;
 
-
 @interface GLKVAObject : NSObject
 
-
 @property(nonatomic, readonly) GLuint glName;
-@property(nonatomic,retain) NSMutableArray* VBOs;
+@property(nonatomic,retain) NSMutableDictionary* VBOs;
 
 -(GLK2BufferObject*) addVBOForAttribute:(GLuint) targetAttribute
                          filledWithData:(void*) data // address of the data to upload
@@ -23,4 +21,12 @@
                             numOfFloats:(int) numFloatsForItem
                                  stride:(int) strideInByte
                                  offset:(GLvoid*) offsetPosition ;
+
+-(void) updateVBOForAttribute:(GLuint) targetAttribute
+                            filledWithData:(void*) data
+                               numVertices:(int) numDataItems
+                               numOfFloats:(int) numFloatsForItem
+                                    stride:(int) strideInByte
+                                    offset:(GLvoid*) offsetPosition;
+
 @end

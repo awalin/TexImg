@@ -28,7 +28,17 @@
 		E715510B1936883200D57575 /* food.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E715510A1936883200D57575 /* food.jpg */; };
 		E715510E1936914200D57575 /* TexImgPlane.m in Sources */ = {isa = PBXBuildFile; fileRef = E715510D1936914200D57575 /* TexImgPlane.m */; };
 		E715511019391BE000D57575 /* canvas1.png in Resources */ = {isa = PBXBuildFile; fileRef = E715510F19391BE000D57575 /* canvas1.png */; };
+		E71A86D41946693600968BD7 /* TexImgTween.m in Sources */ = {isa = PBXBuildFile; fileRef = E71A86D31946693600968BD7 /* TexImgTween.m */; };
 		E721E7941940D8D200E3BB7D /* earthbw.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = E721E7931940D8D200E3BB7D /* earthbw.jpeg */; };
+		E7E16AB91947561C006D9DAF /* TexImgMainUIController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16AB81947561C006D9DAF /* TexImgMainUIController.m */; };
+		E7E16ABF1950B782006D9DAF /* TexImgCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16ABE1950B782006D9DAF /* TexImgCollectionCell.m */; };
+		E7E16AC71950D25F006D9DAF /* CustomCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16AC51950D25F006D9DAF /* CustomCollectionViewController.m */; };
+		E7E16AD11952364D006D9DAF /* tween.png in Resources */ = {isa = PBXBuildFile; fileRef = E7E16AD01952364D006D9DAF /* tween.png */; };
+		E7E16AD419548577006D9DAF /* TexImgTweenFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16AD319548577006D9DAF /* TexImgTweenFunction.m */; };
+		E7E16AD71954BBAE006D9DAF /* easing-functions.png in Resources */ = {isa = PBXBuildFile; fileRef = E7E16AD51954BBAE006D9DAF /* easing-functions.png */; };
+		E7E16AD81954BBAE006D9DAF /* Tween_easing_table.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E7E16AD61954BBAE006D9DAF /* Tween_easing_table.jpg */; };
+		E7E16ADB1959FDD3006D9DAF /* TexImgCustomCellBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16ADA1959FDD3006D9DAF /* TexImgCustomCellBackground.m */; };
+		E7E78B391961FE0900042D12 /* TexImgFrameBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E78B381961FE0900042D12 /* TexImgFrameBuffer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,7 +82,24 @@
 		E715510C1936914200D57575 /* TexImgPlane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgPlane.h; sourceTree = "<group>"; };
 		E715510D1936914200D57575 /* TexImgPlane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgPlane.m; sourceTree = "<group>"; };
 		E715510F19391BE000D57575 /* canvas1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = canvas1.png; path = ../../../Desktop/canvas1.png; sourceTree = "<group>"; };
+		E71A86D21946693600968BD7 /* TexImgTween.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgTween.h; sourceTree = "<group>"; };
+		E71A86D31946693600968BD7 /* TexImgTween.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgTween.m; sourceTree = "<group>"; };
 		E721E7931940D8D200E3BB7D /* earthbw.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = earthbw.jpeg; path = ../../../Desktop/earthbw.jpeg; sourceTree = "<group>"; };
+		E7E16AB71947561C006D9DAF /* TexImgMainUIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgMainUIController.h; sourceTree = SOURCE_ROOT; };
+		E7E16AB81947561C006D9DAF /* TexImgMainUIController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgMainUIController.m; sourceTree = SOURCE_ROOT; };
+		E7E16ABD1950B782006D9DAF /* TexImgCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgCollectionCell.h; sourceTree = "<group>"; };
+		E7E16ABE1950B782006D9DAF /* TexImgCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgCollectionCell.m; sourceTree = "<group>"; };
+		E7E16AC41950D25F006D9DAF /* CustomCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCollectionViewController.h; sourceTree = "<group>"; };
+		E7E16AC51950D25F006D9DAF /* CustomCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomCollectionViewController.m; sourceTree = "<group>"; };
+		E7E16AD01952364D006D9DAF /* tween.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tween.png; path = ../../../Desktop/tween.png; sourceTree = "<group>"; };
+		E7E16AD219548577006D9DAF /* TexImgTweenFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgTweenFunction.h; sourceTree = "<group>"; };
+		E7E16AD319548577006D9DAF /* TexImgTweenFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgTweenFunction.m; sourceTree = "<group>"; };
+		E7E16AD51954BBAE006D9DAF /* easing-functions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "easing-functions.png"; path = "../../../Desktop/easing-functions.png"; sourceTree = "<group>"; };
+		E7E16AD61954BBAE006D9DAF /* Tween_easing_table.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tween_easing_table.jpg; path = ../../../Desktop/Tween_easing_table.jpg; sourceTree = "<group>"; };
+		E7E16AD91959FDD3006D9DAF /* TexImgCustomCellBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgCustomCellBackground.h; sourceTree = "<group>"; };
+		E7E16ADA1959FDD3006D9DAF /* TexImgCustomCellBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgCustomCellBackground.m; sourceTree = "<group>"; };
+		E7E78B371961FE0900042D12 /* TexImgFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgFrameBuffer.h; sourceTree = "<group>"; };
+		E7E78B381961FE0900042D12 /* TexImgFrameBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgFrameBuffer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +129,9 @@
 		E71550A0193633C600D57575 = {
 			isa = PBXGroup;
 			children = (
+				E7E16AD51954BBAE006D9DAF /* easing-functions.png */,
+				E7E16AD61954BBAE006D9DAF /* Tween_easing_table.jpg */,
+				E7E16AD01952364D006D9DAF /* tween.png */,
 				E721E7931940D8D200E3BB7D /* earthbw.jpeg */,
 				E715510F19391BE000D57575 /* canvas1.png */,
 				E715510A1936883200D57575 /* food.jpg */,
@@ -137,21 +167,35 @@
 			isa = PBXGroup;
 			children = (
 				E71550E31936346200D57575 /* en.lproj */,
+				E7E16AB71947561C006D9DAF /* TexImgMainUIController.h */,
+				E7E16AB81947561C006D9DAF /* TexImgMainUIController.m */,
 				E71550E81936346200D57575 /* GLK2BufferObject.h */,
 				E71550E91936346200D57575 /* GLK2BufferObject.m */,
 				E71550EA1936346200D57575 /* GLK2DrawCall.h */,
 				E71550EB1936346200D57575 /* GLK2DrawCall.m */,
-				E71550EC1936346200D57575 /* GLKVAObject.h */,
-				E71550ED1936346200D57575 /* GLKVAObject.m */,
-				E71550EF1936346200D57575 /* main.storyboard */,
-				E71550F41936346200D57575 /* ViewController.h */,
-				E71550F51936346200D57575 /* ViewController.m */,
-				E71550BB193633C600D57575 /* TexImgAppDelegate.h */,
-				E71550BC193633C600D57575 /* TexImgAppDelegate.m */,
-				E71550BE193633C600D57575 /* Images.xcassets */,
-				E71550B3193633C600D57575 /* Supporting Files */,
 				E715510C1936914200D57575 /* TexImgPlane.h */,
 				E715510D1936914200D57575 /* TexImgPlane.m */,
+				E71A86D21946693600968BD7 /* TexImgTween.h */,
+				E71A86D31946693600968BD7 /* TexImgTween.m */,
+				E71550EC1936346200D57575 /* GLKVAObject.h */,
+				E71550ED1936346200D57575 /* GLKVAObject.m */,
+				E7E16AC41950D25F006D9DAF /* CustomCollectionViewController.h */,
+				E7E16AC51950D25F006D9DAF /* CustomCollectionViewController.m */,
+				E71550F41936346200D57575 /* ViewController.h */,
+				E71550F51936346200D57575 /* ViewController.m */,
+				E7E16ABD1950B782006D9DAF /* TexImgCollectionCell.h */,
+				E7E16ABE1950B782006D9DAF /* TexImgCollectionCell.m */,
+				E71550BB193633C600D57575 /* TexImgAppDelegate.h */,
+				E71550BC193633C600D57575 /* TexImgAppDelegate.m */,
+				E71550EF1936346200D57575 /* main.storyboard */,
+				E71550BE193633C600D57575 /* Images.xcassets */,
+				E71550B3193633C600D57575 /* Supporting Files */,
+				E7E16AD219548577006D9DAF /* TexImgTweenFunction.h */,
+				E7E16AD319548577006D9DAF /* TexImgTweenFunction.m */,
+				E7E16AD91959FDD3006D9DAF /* TexImgCustomCellBackground.h */,
+				E7E16ADA1959FDD3006D9DAF /* TexImgCustomCellBackground.m */,
+				E7E78B371961FE0900042D12 /* TexImgFrameBuffer.h */,
+				E7E78B381961FE0900042D12 /* TexImgFrameBuffer.m */,
 			);
 			path = TexImg;
 			sourceTree = "<group>";
@@ -272,12 +316,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				E71551011936346200D57575 /* main.storyboard in Resources */,
+				E7E16AD81954BBAE006D9DAF /* Tween_easing_table.jpg in Resources */,
+				E7E16AD71954BBAE006D9DAF /* easing-functions.png in Resources */,
 				E715511019391BE000D57575 /* canvas1.png in Resources */,
 				E71550B7193633C600D57575 /* InfoPlist.strings in Resources */,
 				E715510B1936883200D57575 /* food.jpg in Resources */,
 				E71550FA1936346200D57575 /* en.lproj in Resources */,
 				E71550BF193633C600D57575 /* Images.xcassets in Resources */,
 				E721E7941940D8D200E3BB7D /* earthbw.jpeg in Resources */,
+				E7E16AD11952364D006D9DAF /* tween.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,11 +343,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7E16AC71950D25F006D9DAF /* CustomCollectionViewController.m in Sources */,
+				E7E16AB91947561C006D9DAF /* TexImgMainUIController.m in Sources */,
+				E7E16AD419548577006D9DAF /* TexImgTweenFunction.m in Sources */,
 				E71550FD1936346200D57575 /* GLK2BufferObject.m in Sources */,
+				E71A86D41946693600968BD7 /* TexImgTween.m in Sources */,
+				E7E78B391961FE0900042D12 /* TexImgFrameBuffer.m in Sources */,
 				E71550BD193633C600D57575 /* TexImgAppDelegate.m in Sources */,
 				E71550FF1936346200D57575 /* GLKVAObject.m in Sources */,
 				E71551041936346200D57575 /* ViewController.m in Sources */,
+				E7E16ADB1959FDD3006D9DAF /* TexImgCustomCellBackground.m in Sources */,
 				E71550FE1936346200D57575 /* GLK2DrawCall.m in Sources */,
+				E7E16ABF1950B782006D9DAF /* TexImgCollectionCell.m in Sources */,
 				E71550B9193633C600D57575 /* main.m in Sources */,
 				E715510E1936914200D57575 /* TexImgPlane.m in Sources */,
 			);

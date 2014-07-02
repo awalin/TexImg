@@ -11,13 +11,18 @@
 @implementation GLK2BufferObject
 @synthesize glName;
 
--(void) upload:(void *) dataArray numItems:(int) count usageHint:(GLenum) usage
-{
-    
+-(void) upload:(void *) dataArray numItems:(int)count usageHint:(GLenum) usage {
+    self.usageHint = usage;
+    self.items = count;
 	glBindBuffer( self.glBufferType, self.glName );
-	glBufferData( GL_ARRAY_BUFFER, count * self.totalBytesPerItem, dataArray, usage);
+	glBufferData( GL_ARRAY_BUFFER, self.items * self.totalBytesPerItem, dataArray, self.usageHint);
 }
 
+
+-(void) update: (void *) dataArray{
+    glBindBuffer( self.glBufferType, self.glName );
+	glBufferData( GL_ARRAY_BUFFER, self.items * self.totalBytesPerItem, dataArray, self.usageHint);
+}
 
 +(GLK2BufferObject *)vertexBufferObject
 {
@@ -39,8 +44,7 @@
 
 
 
--(void) bind
-{
+-(void) bind {
 	glBindBuffer(GL_ARRAY_BUFFER, self.glName);
 }
 

@@ -1,6 +1,6 @@
 #import "GLK2DrawCall.h"
-
 #import "GLKVAObject.h"
+#import "TexImgFrameBuffer.h"
 
 @implementation GLK2DrawCall
 {
@@ -32,12 +32,16 @@
 }
 
 -(void) drawWithMode:(GLuint) mode{
+    
     glBindVertexArrayOES( self.VAO.glName );
     glDrawArrays(mode, 0, self.numOfVerticesToDraw);
+    }
 
-  
+-(void) drawInFrmeBuffer:(GLuint) mode{
+    NSLog(@"inside frame buffer drawing %d", self.frameBuffer.glName);
+    glBindVertexArrayOES( self.frameBuffer.glName );
+    glDrawArrays(mode, 0, self.numOfVerticesToDraw);
 }
-
 
 -(void) setClearColourRed:(float) r green:(float) g blue:(float) b alpha:(float) a
 {
