@@ -69,28 +69,57 @@
 }
 
 -(float) bounceout {
-
-    if(ratio < 1/2.75) {
-        return  7.5625*ratio*ratio;
-    }else if(ratio<2/2.75){
-        ratio-=(1.5/2.75);
-        return (7.5625*ratio*ratio + .75);
-    }else if(ratio<2.5/2.75){
-        ratio-=(2.25/2.75);
-        return 7.5625*(ratio*ratio) + .9375;
-    }else {
-        ratio-=(2.625/2.75);
-        return 7.5625*(ratio*ratio) +.984375;
-    }
+    return 1.0;
     
-//    return ratio;
     
 }
 
+
+
+// Bounce easing in/out
+-(float) bounceIn {
+    
+    time = duration-time;
+    
+    return - [self bounceOut] ;
+}
+
+-(float) bounceOut {
+  
+    if ((time/=duration) < (1/2.75)) {
+        return (7.5625*time*time) ;
+    }
+    else if (time < (2/2.75)) {
+        time -=(1.5/2.75);
+        return (7.5625*time*time + .75) ;
+    }
+    else if (time < (2.5/2.75)) {
+        time-=(2.25/2.75);
+        return (7.5625*time*time + .9375) ;
+    }
+    else {
+        time-=(2.625/2.75);
+        return (7.5625*time*time + .984375) ;
+    }
+}
+
+-(float) bounceInOut{
+    if (time < duration/2){
+        time = time*2;
+        return [self bounceIn] * .5;
+    }
+    else{
+        time= time*2-duration;
+        
+        return  ([self bounceOut] +1)*.5;
+    }
+}
+
+
 -(float) calculateTweenWithTime:(float)mtime duration:(float)mduration{
     
-    time= mtime;
-    duration=mduration;
+    time = mtime;
+    duration = mduration;
     ratio = time/duration;
     
     NSString* functionName= self.selectedFunction;
@@ -107,9 +136,12 @@
     } else if ([functionName isEqualToString:@"sineout"]){
         return [self sineout];
     } else if ([functionName isEqualToString:@"bouncein"]){
-        return [self bouncein];
+        return [self bounceIn];
     } else if ([functionName isEqualToString:@"bounceout"]){
-        return [self bounceout];
+        return [self bounceOut];
+    }
+    else if ([functionName isEqualToString:@"bounceinout"]){
+        return [self bounceInOut];
     }
     
 //   SEL selc = NSSelectorFromString(@"linear");

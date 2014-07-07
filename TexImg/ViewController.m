@@ -18,13 +18,12 @@
     int taps;
     GLKTextureInfo * info ;
     GLKVector3 velocity;
-    GLKVector3 touchStart;
-    NSDate *startTime;
+    
     
     BOOL touchEnded;
     // modelView properties
     GLfloat zoomscale;
-    GLKVector3 modeltranslation;
+    GLKVector3 modelTranslation;
     GLKVector3 modelrotation;
     GLKMatrix4 _rotMatrix;
     GLfloat zTranslation;
@@ -40,6 +39,7 @@
     GLfloat eachWidth;
     GLfloat eachHeight;
     BOOL resetCalled;
+    BOOL pickingMode;
     
     NSTimeInterval totalTimeElapsed;
     NSTimeInterval durationRemaining;
@@ -138,7 +138,7 @@
           
         //BR
           s =  x + plane.width/2 ;//s+eachRow;
-          t =  y -plane.height/2;  //t;
+          t =  y - plane.height/2;  //t;
           vrtx = GLKVector3Make(s, t, 0);
           plane.vertices[1] = vrtx;
           
@@ -158,19 +158,19 @@
             
       //two more
         //BR
-          s =  x+ plane.width/2 ;//s+eachRow;
+          s = x + plane.width/2 ;//s+eachRow;
           t = y - plane.height/2;  //t;
           vrtx = GLKVector3Make(s, t, 0); // base
           plane.vertices[4] = vrtx;
             
         //TL
-          s =  x - eachWidth/2 ;//s+eachRow;
-          t = y + eachHeight/2;  //t;
+          s = x - plane.width/2 ;//s+eachRow;
+          t = y + plane.height/2;  //t;
           vrtx = GLKVector3Make(s, t, 0); // base
           plane.vertices[5] = vrtx;
           
         //end of vertex creation
-          x = x + plane.width;
+          x = x + eachWidth;
         }
         y = y + eachHeight;
     }
@@ -204,6 +204,7 @@
     float offsetTY = 0.0f;
     GLfloat eachWidthT = spanTX/cols;
     GLfloat eachHeightT = spanTY/rows;
+    delay=0.001;
     
     // centre point for each plane
     v = offsetTY+ eachHeightT/2;
@@ -230,13 +231,15 @@
         plane.phi = phi;
         plane.row = i;
         plane.col = j;
-//            plane.pickingColor = [UIColor colorWithRed:(plane.row/rows) green:(plane.col/cols) blue:0.0 alpha:1.0];
-        
+        plane.height = eachHeight*0.9;
+        plane.width= eachWidth*0.9;
+           
         TexImgTween* tween = [[TexImgTween alloc] init];
         tween.planeId = index;
         tween.targetPhi = phi;
         tween.targetTheta = theta;
         tween.plane = plane;
+        tween.delay = index*delay;
             
         GLfloat x1 = radius*sin(plane.theta)*cos(plane.phi);
         GLfloat y1 = radius*sin(plane.theta)*sin(plane.phi);
@@ -246,9 +249,6 @@
         tween.wallCenter =  GLKVector3Make(x,y,0);
         tween.duration = _duration;
            
-        plane.height = eachHeight;
-        plane.width = eachWidth;
-            
             //Texture
             //BL (0,0)
         s = u - eachWidthT/2;
@@ -291,7 +291,6 @@
         plane.colorId = index;
         //Colors
         GLKVector4 colorV =  GLKVector4Make((i+0.0f)/rows, (j+0.0f)/cols, 0.0, 1.0);//white color
-//        NSLog(@"%f %f %f", colorV.x, colorV.y, colorV.z);
         plane.colors[0]= colorV;
         plane.colors[1]= colorV;
         plane.colors[2]= colorV;
@@ -329,11 +328,13 @@
     self.viewChanged=YES;
     totalTimeElapsed=0.0;
     durationRemaining = _duration;
+    NSDate* currentTime = [NSDate date];
     
     for(int i=0; i< rows; i++){
         for(int j =0; j < cols; j++) {
             int index = (cols*i+j);
             TexImgTween* tween = [self.tweens objectAtIndex:index];
+            tween.startTime = currentTime;
             if(self.viewType==GLOBE){
                 [[self.tweens objectAtIndex:index] setTargetCenter: tween.globeCenter];
                 [[self.tweens objectAtIndex:index] setSourceCenter: tween.wallCenter];
@@ -468,25 +469,26 @@
             durationRemaining = tween.duration - totalTimeElapsed;
             float ratio = timeElapsed/durationRemaining;
             ratio = [tweenFunction calculateTweenWithTime:timeElapsed duration:durationRemaining];
+            float timePassed = -[tween.startTime timeIntervalSinceNow];
             
-            if(timeElapsed > delay){
-            [plane updateVertices:tween.targetCenter
+            if(timePassed> tween.delay){
+               
+                    [plane updateVertices:tween.targetCenter
                     sourceCEnter:tween.sourceCenter
                              mode:self.viewType
                       timeElapsed:timeElapsed
                          duration:durationRemaining
                            ratio:ratio];
             
-            index = 6*(cols*i+j);
-            for(int t =0; t < 6; t++){
-                self.planes[index+t].positionCoords = plane.vertices[t];
-            }
+                    index = 6*(cols*i+j);
+                    for(int t =0; t < 6; t++){
+                        self.planes[index+t].positionCoords = plane.vertices[t];
+                    }
         }
+        
         }
     }
     totalTimeElapsed  += timeElapsed;
-    
-    // self setPaused];
 }
 
 
@@ -495,13 +497,10 @@
     /** All the local setup for the ViewController */
     
     self.effect = [[GLKBaseEffect alloc] init];
-    zTranslation = 4.0f;
+    zTranslation = 3.0f;
     taps=0;
     zoomscale = 1;
-    
-    float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 1.0f, 100.0f);
-    self.effect.transform.projectionMatrix = projectionMatrix;
+    modelTranslation = GLKVector3Make(0.0, 0.0, zTranslation);
     glEnable(GL_DEPTH_TEST);
     
     NSDictionary * options = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -556,7 +555,7 @@
 -(void) resetView{
     
     resetCalled = YES;
-    zTranslation = 4.0;
+    zTranslation = 3.0;
     _rotMatrix = GLKMatrix4Identity;
     velocity = GLKVector3Make(0, 0, 0);
     touchEnded = YES;
@@ -572,8 +571,12 @@
     
     glClearColor(0.1, 0.1, 0.1, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   
-    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -zTranslation);
+ 
+    float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
+    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.001f, 100.0f);
+    self.effect.transform.projectionMatrix = projectionMatrix;
+    
+    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -modelTranslation.z);
     modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, _rotMatrix);
     self.effect.transform.modelviewMatrix = modelViewMatrix;
     self.effect.texture2d0.enabled = YES;

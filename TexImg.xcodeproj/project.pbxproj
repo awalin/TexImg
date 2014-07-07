@@ -33,10 +33,8 @@
 		E7E16AB91947561C006D9DAF /* TexImgMainUIController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16AB81947561C006D9DAF /* TexImgMainUIController.m */; };
 		E7E16ABF1950B782006D9DAF /* TexImgCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16ABE1950B782006D9DAF /* TexImgCollectionCell.m */; };
 		E7E16AC71950D25F006D9DAF /* CustomCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16AC51950D25F006D9DAF /* CustomCollectionViewController.m */; };
-		E7E16AD11952364D006D9DAF /* tween.png in Resources */ = {isa = PBXBuildFile; fileRef = E7E16AD01952364D006D9DAF /* tween.png */; };
 		E7E16AD419548577006D9DAF /* TexImgTweenFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16AD319548577006D9DAF /* TexImgTweenFunction.m */; };
 		E7E16AD71954BBAE006D9DAF /* easing-functions.png in Resources */ = {isa = PBXBuildFile; fileRef = E7E16AD51954BBAE006D9DAF /* easing-functions.png */; };
-		E7E16AD81954BBAE006D9DAF /* Tween_easing_table.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E7E16AD61954BBAE006D9DAF /* Tween_easing_table.jpg */; };
 		E7E16ADB1959FDD3006D9DAF /* TexImgCustomCellBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16ADA1959FDD3006D9DAF /* TexImgCustomCellBackground.m */; };
 		E7E78B391961FE0900042D12 /* TexImgFrameBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E78B381961FE0900042D12 /* TexImgFrameBuffer.m */; };
 /* End PBXBuildFile section */
@@ -91,11 +89,9 @@
 		E7E16ABE1950B782006D9DAF /* TexImgCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgCollectionCell.m; sourceTree = "<group>"; };
 		E7E16AC41950D25F006D9DAF /* CustomCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCollectionViewController.h; sourceTree = "<group>"; };
 		E7E16AC51950D25F006D9DAF /* CustomCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomCollectionViewController.m; sourceTree = "<group>"; };
-		E7E16AD01952364D006D9DAF /* tween.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tween.png; path = ../../../Desktop/tween.png; sourceTree = "<group>"; };
 		E7E16AD219548577006D9DAF /* TexImgTweenFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgTweenFunction.h; sourceTree = "<group>"; };
 		E7E16AD319548577006D9DAF /* TexImgTweenFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgTweenFunction.m; sourceTree = "<group>"; };
 		E7E16AD51954BBAE006D9DAF /* easing-functions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "easing-functions.png"; path = "../../../Desktop/easing-functions.png"; sourceTree = "<group>"; };
-		E7E16AD61954BBAE006D9DAF /* Tween_easing_table.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Tween_easing_table.jpg; path = ../../../Desktop/Tween_easing_table.jpg; sourceTree = "<group>"; };
 		E7E16AD91959FDD3006D9DAF /* TexImgCustomCellBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgCustomCellBackground.h; sourceTree = "<group>"; };
 		E7E16ADA1959FDD3006D9DAF /* TexImgCustomCellBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgCustomCellBackground.m; sourceTree = "<group>"; };
 		E7E78B371961FE0900042D12 /* TexImgFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgFrameBuffer.h; sourceTree = "<group>"; };
@@ -130,8 +126,6 @@
 			isa = PBXGroup;
 			children = (
 				E7E16AD51954BBAE006D9DAF /* easing-functions.png */,
-				E7E16AD61954BBAE006D9DAF /* Tween_easing_table.jpg */,
-				E7E16AD01952364D006D9DAF /* tween.png */,
 				E721E7931940D8D200E3BB7D /* earthbw.jpeg */,
 				E715510F19391BE000D57575 /* canvas1.png */,
 				E715510A1936883200D57575 /* food.jpg */,
@@ -316,7 +310,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E71551011936346200D57575 /* main.storyboard in Resources */,
-				E7E16AD81954BBAE006D9DAF /* Tween_easing_table.jpg in Resources */,
 				E7E16AD71954BBAE006D9DAF /* easing-functions.png in Resources */,
 				E715511019391BE000D57575 /* canvas1.png in Resources */,
 				E71550B7193633C600D57575 /* InfoPlist.strings in Resources */,
@@ -324,7 +317,6 @@
 				E71550FA1936346200D57575 /* en.lproj in Resources */,
 				E71550BF193633C600D57575 /* Images.xcassets in Resources */,
 				E721E7941940D8D200E3BB7D /* earthbw.jpeg in Resources */,
-				E7E16AD11952364D006D9DAF /* tween.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

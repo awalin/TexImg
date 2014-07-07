@@ -37,6 +37,7 @@
 @property float radius;
 @property GLKVector3 planeRotation;
 @property GLKVector3 scale;
+@property NSDate* startTime;
 
 -(TexImgPlane*) init;
 

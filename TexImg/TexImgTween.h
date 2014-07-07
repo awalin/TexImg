@@ -27,6 +27,8 @@
 
 @property float targetTheta;
 @property float targetPhi;
+@property NSDate* startTime;
+@property float delay;
 
 @property NSTimeInterval duration;
 
