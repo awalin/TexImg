@@ -91,7 +91,7 @@
     
     
 	[view bindDrawable];
-    /////////rotation and jesture //////
+    ////jesture //////
     UITapGestureRecognizer * dtRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
     dtRec.numberOfTapsRequired = 2;
     [self.view addGestureRecognizer:dtRec];
@@ -843,7 +843,7 @@
         GLuint depthRenderbuffer;
         glGenRenderbuffers(1, &depthRenderbuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24_OES, width, height);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
         
         GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER) ;
@@ -884,14 +884,23 @@
     glEnableVertexAttribArray(GLKVertexAttribColor);
     glEnableVertexAttribArray(GLKVertexAttribPosition);
     glBindFramebuffer(GL_FRAMEBUFFER, pickFBO);
+    
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    float aspect = fabsf(width/height);
+	GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.001f, 100.0f);
+    self.effect.transform.projectionMatrix = projectionMatrix;
+
     
     GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -zTranslation);
     modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, _rotMatrix);
     self.effect.transform.modelviewMatrix = modelViewMatrix;
-    self.effect.texture2d0.enabled = NO;
+    self.effect.texture2d0.enabled = GL_FALSE;
+    
     [self.effect prepareToDraw];
+    glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
     glDrawArrays(GL_TRIANGLES, 0, rows*cols*6);
     
 #ifdef DEBUG
@@ -978,15 +987,8 @@
     durationRemaining = _duration;
     pickingMode = YES;
     
-    
 }
 
-
-//-(void) setTweenFunction:(NSString*) function{
-//    //    NSLog(@"Parent %@", function);
-//    [self setTweenFunction: function];
-//    
-//}
 
 -(IBAction) openFunctionMenu:(id) sender {
     

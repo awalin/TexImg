@@ -7,7 +7,7 @@
         <!--GLKit View Controller - Image Texture Mapping-->
         <scene sceneID="RgI-ic-6l4">
             <objects>
-                <glkViewController storyboardIdentifier="glkviewcontroller" autoresizesArchivedViewToFullSize="NO" title="Image Texture Mapping" modalPresentationStyle="pageSheet" preferredFramesPerSecond="30" id="YZN-DK-qWY" customClass="ViewController" sceneMemberID="viewController">
+                <glkViewController storyboardIdentifier="glkviewcontroller" title="Image Texture Mapping" preferredFramesPerSecond="30" id="YZN-DK-qWY" customClass="ViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Xhl-lN-SDP"/>
                         <viewControllerLayoutGuide type="bottom" id="yQP-Tg-hsu"/>
@@ -44,14 +44,10 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <slider opaque="NO" contentMode="center" fixedFrame="YES" highlighted="YES" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="2" minValue="0.5" maxValue="2.5" translatesAutoresizingMaskIntoConstraints="NO" id="ufx-fq-p1G">
+                            <slider opaque="NO" contentMode="center" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="2" minValue="0.5" maxValue="2.5" translatesAutoresizingMaskIntoConstraints="NO" id="ufx-fq-p1G">
                                 <rect key="frame" x="137" y="989" width="118" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" red="0.48867384349600268" green="0.63893075912248254" blue="0.84295280612244894" alpha="1" colorSpace="calibratedRGB"/>
-                                <rect key="contentStretch" x="0.0" y="0.0" width="0.79999999999999982" height="0.74999999999999978"/>
-                                <color key="minimumTrackTintColor" red="0.38680589378181979" green="0.76728835252459049" blue="0.91244818239795922" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="maximumTrackTintColor" red="0.19010889246422566" green="0.25052546533914949" blue="0.43500876913265307" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="thumbTintColor" red="0.21913866928116174" green="0.28878090016644525" blue="0.50143494897959184" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <action selector="changeDuration:" destination="YZN-DK-qWY" eventType="valueChanged" id="kac-em-PIz"/>
                                 </connections>
@@ -108,14 +104,10 @@
                                     <action selector="openFunctionMenu:" destination="YZN-DK-qWY" eventType="touchUpInside" id="eT1-T1-V6w"/>
                                 </connections>
                             </button>
-                            <slider opaque="NO" contentMode="center" fixedFrame="YES" highlighted="YES" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.0001" minValue="0.0" maxValue="0.001" translatesAutoresizingMaskIntoConstraints="NO" id="LAM-nf-xda">
+                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.0001" minValue="0.0" maxValue="0.001" translatesAutoresizingMaskIntoConstraints="NO" id="LAM-nf-xda">
                                 <rect key="frame" x="566" y="986" width="118" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" red="0.48867384349999998" green="0.63893075909999997" blue="0.84295280610000001" alpha="1" colorSpace="calibratedRGB"/>
-                                <rect key="contentStretch" x="0.0" y="0.0" width="0.79999999999999982" height="0.74999999999999978"/>
-                                <color key="minimumTrackTintColor" red="0.38680589380000002" green="0.76728835250000005" blue="0.91244818240000003" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="maximumTrackTintColor" red="0.19010889249999999" green="0.25052546530000003" blue="0.43500876910000003" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="thumbTintColor" red="0.21913866930000001" green="0.28878090020000002" blue="0.50143494899999996" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <action selector="addDelay:" destination="YZN-DK-qWY" eventType="valueChanged" id="w7p-9s-1zu"/>
                                 </connections>
@@ -123,7 +115,6 @@
                         </subviews>
                         <color key="tintColor" red="0.62896665882917779" green="0.63627328188667964" blue="0.91246811224489799" alpha="1" colorSpace="calibratedRGB"/>
                     </glkView>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="768" height="1024"/>
                     <connections>
                         <outlet property="delaySlider" destination="LAM-nf-xda" id="qDy-yF-dXc"/>
