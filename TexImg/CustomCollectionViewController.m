@@ -9,7 +9,8 @@
 #import "CustomCollectionViewController.h"
 #import "TexImgCollectionCell.h"
 #import "TexImgCollectionHeaderView.h"
-#import "TexImgMainUIController.h"
+#import "ViewController.h"
+
 
 @implementation CustomCollectionViewController
 
@@ -58,12 +59,6 @@
     CGImageRelease(imageRef);
     myCell.imageView.image = image;
     
-//    if(indexPath.section==self.selectedSection  && indexPath.row==self.selectedCellInSection){
-//        myCell.selected = YES;
-//    }
-//    else {
-//        myCell.selected=NO;
-//    }
     return myCell;
 }
 
@@ -86,9 +81,10 @@
         [function appendString:@"sine"];
         if(indexPath.row==0){
             [function appendString:@"in"];
-            
         }else if(indexPath.row==1){
             [function appendString:@"out"];
+        }else if(indexPath.row==2){
+            [function appendString:@"inout"];
         }
     }else if (indexPath.section==2){
         [function appendString:@"quad"];
@@ -96,6 +92,8 @@
             [function appendString:@"in"];
         }else if(indexPath.row==1){
             [function appendString:@"out"];
+        }else if(indexPath.row==2){
+            [function appendString:@"inout"];
         }
     }
     else if (indexPath.section==3){
@@ -104,6 +102,8 @@
             [function appendString:@"in"];
         }else if(indexPath.row==1){
             [function appendString:@"out"];
+        }else if(indexPath.row==2){
+            [function appendString:@"inout"];
         }
     }else {
      [function appendString:@"linear"];
@@ -115,7 +115,7 @@
     NSLog(@"selected function %@", function);
     
     self.selectedFunction = function;
-    [(TexImgMainUIController*)[self parentViewController] setTweenFunction:self.selectedFunction];
+    [(ViewController*)[self parentViewController] setTweenFunction:self.selectedFunction];
 	
     [[NSNotificationCenter defaultCenter] postNotificationName:@"Easing" object:self userInfo:nil];
 

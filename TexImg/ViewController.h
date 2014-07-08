@@ -6,16 +6,10 @@
 @class TexImgPlane;
 @class TexImgTweens;
 @class TexImgTweenFunction;
+@class CustomCollectionViewController;
 
+@interface ViewController : GLKViewController  <UIPopoverControllerDelegate>
 
-@interface ViewController : GLKViewController
-
-
-@property(nonatomic, retain) NSMutableArray* shapes;
-
-
-
-@property (strong, nonatomic) GLKBaseEffect *effect;
 
 typedef struct {
     GLKVector3 positionCoords;
@@ -30,14 +24,20 @@ typedef enum {
     RESET
 } ViewType;
 
-@property BOOL viewChanged;
-@property ViewType* viewType;
-@property CustomPlane *planes; // array of the planes
 
+
+@property CustomCollectionViewController* collectionViewController;
+@property UIPopoverController* popOverController;
+@property(nonatomic, retain) NSMutableArray* shapes;
+@property (strong, nonatomic) GLKBaseEffect *effect;
+@property CustomPlane *planes; // array of the planes
 @property NSMutableArray* tweens;
 @property NSMutableArray* allPlanes;
 
-@property double latMx;
+
+
+@property BOOL viewChanged;
+@property ViewType* viewType;@property double latMx;
 @property double longMx;
 @property double latMn;
 @property double longMn;
@@ -48,13 +48,23 @@ typedef enum {
 @property (strong) NSMutableDictionary *colorMap;
 
 @property (strong, nonatomic) UIWindow *window;
+@property IBOutlet UISlider* durationSlider;
+@property IBOutlet UISlider* delaySlider;
+@property IBOutlet UISegmentedControl* viewTypeSegments;
+
 -(void) setDuration:(float) val;
 -(void) setDelay:(float) val;
 -(void) makePlanes;
 -(void) makeGlobe;
 -(void) resetView;
 -(void) changeView:(ViewType*)viewType;
--(void)setupGL;
+-(void) setupGL;
 -(void) setTweenFunction:(NSString*) function;
+
+-(IBAction) addDelay:(id)sender;
+-(IBAction) changeDuration:(id)sender;
+-(IBAction) openFunctionMenu:(id) sender;
+-(IBAction) segmentValueChanged:(id)sender;
+
 
 @end

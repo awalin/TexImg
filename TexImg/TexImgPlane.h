@@ -11,8 +11,9 @@
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
 #import "ViewController.h"
-//@class ViewController;
 
+
+@class TexImgTween;
 @interface TexImgPlane : NSObject
 
 
@@ -40,6 +41,12 @@
 @property NSDate* startTime;
 
 -(TexImgPlane*) init;
+
+-(void) updateVerticesWithTween:(TexImgTween*) tween
+                           mode:(ViewType*)viewType
+                    timeElapsed:(NSTimeInterval)timeElapsed
+                       duration:(NSTimeInterval)duration
+                          ratio:(float)ratio;
 
 -(void) updateVertices:(GLKVector3) targetCenter
           sourceCEnter:(GLKVector3) sourceCenter

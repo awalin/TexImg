@@ -30,7 +30,6 @@
 		E715511019391BE000D57575 /* canvas1.png in Resources */ = {isa = PBXBuildFile; fileRef = E715510F19391BE000D57575 /* canvas1.png */; };
 		E71A86D41946693600968BD7 /* TexImgTween.m in Sources */ = {isa = PBXBuildFile; fileRef = E71A86D31946693600968BD7 /* TexImgTween.m */; };
 		E721E7941940D8D200E3BB7D /* earthbw.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = E721E7931940D8D200E3BB7D /* earthbw.jpeg */; };
-		E7E16AB91947561C006D9DAF /* TexImgMainUIController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16AB81947561C006D9DAF /* TexImgMainUIController.m */; };
 		E7E16ABF1950B782006D9DAF /* TexImgCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16ABE1950B782006D9DAF /* TexImgCollectionCell.m */; };
 		E7E16AC71950D25F006D9DAF /* CustomCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16AC51950D25F006D9DAF /* CustomCollectionViewController.m */; };
 		E7E16AD419548577006D9DAF /* TexImgTweenFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = E7E16AD319548577006D9DAF /* TexImgTweenFunction.m */; };
@@ -83,8 +82,6 @@
 		E71A86D21946693600968BD7 /* TexImgTween.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgTween.h; sourceTree = "<group>"; };
 		E71A86D31946693600968BD7 /* TexImgTween.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgTween.m; sourceTree = "<group>"; };
 		E721E7931940D8D200E3BB7D /* earthbw.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = earthbw.jpeg; path = ../../../Desktop/earthbw.jpeg; sourceTree = "<group>"; };
-		E7E16AB71947561C006D9DAF /* TexImgMainUIController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgMainUIController.h; sourceTree = SOURCE_ROOT; };
-		E7E16AB81947561C006D9DAF /* TexImgMainUIController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgMainUIController.m; sourceTree = SOURCE_ROOT; };
 		E7E16ABD1950B782006D9DAF /* TexImgCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexImgCollectionCell.h; sourceTree = "<group>"; };
 		E7E16ABE1950B782006D9DAF /* TexImgCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TexImgCollectionCell.m; sourceTree = "<group>"; };
 		E7E16AC41950D25F006D9DAF /* CustomCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCollectionViewController.h; sourceTree = "<group>"; };
@@ -161,8 +158,6 @@
 			isa = PBXGroup;
 			children = (
 				E71550E31936346200D57575 /* en.lproj */,
-				E7E16AB71947561C006D9DAF /* TexImgMainUIController.h */,
-				E7E16AB81947561C006D9DAF /* TexImgMainUIController.m */,
 				E71550E81936346200D57575 /* GLK2BufferObject.h */,
 				E71550E91936346200D57575 /* GLK2BufferObject.m */,
 				E71550EA1936346200D57575 /* GLK2DrawCall.h */,
@@ -336,7 +331,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7E16AC71950D25F006D9DAF /* CustomCollectionViewController.m in Sources */,
-				E7E16AB91947561C006D9DAF /* TexImgMainUIController.m in Sources */,
 				E7E16AD419548577006D9DAF /* TexImgTweenFunction.m in Sources */,
 				E71550FD1936346200D57575 /* GLK2BufferObject.m in Sources */,
 				E71A86D41946693600968BD7 /* TexImgTween.m in Sources */,
