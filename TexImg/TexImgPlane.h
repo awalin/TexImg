@@ -43,14 +43,14 @@
 -(TexImgPlane*) init;
 
 -(void) updateVerticesWithTween:(TexImgTween*) tween
-                           mode:(ViewType*)viewType
+                           mode:(ViewType)viewType
                     timeElapsed:(NSTimeInterval)timeElapsed
                        duration:(NSTimeInterval)duration
                           ratio:(float)ratio;
 
 -(void) updateVertices:(GLKVector3) targetCenter
           sourceCEnter:(GLKVector3) sourceCenter
-                  mode:(ViewType*)viewType
+                  mode:(ViewType)viewType
            timeElapsed:(NSTimeInterval)timeElapsed
               duration:(NSTimeInterval)duration
                  ratio:(float)ratio;

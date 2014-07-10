@@ -72,7 +72,7 @@
 {
     // TODO: Select Item
 //    indexPath
-    NSLog(@" %d, %d ", indexPath.row, indexPath.section);
+//    NSLog(@" %d, %d ", indexPath.row, indexPath.section);
     NSMutableString* function= [NSMutableString string];;
     
     if(indexPath.section==0){

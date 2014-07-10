@@ -27,6 +27,7 @@
     GLfloat zTranslation;
     NSTimeInterval _duration;
     NSTimeInterval delay;
+    GLKVector3 currentRotation;
     int rows;
     int cols;
     float radius;
@@ -50,6 +51,8 @@
     int currentTween;
     int prevTween;
     
+    GLuint vertexBuffer;
+    GLuint colorBuffer;
 }
 
 
@@ -73,7 +76,7 @@
     [self segmentValueChanged: self.viewTypeSegments];
 
 
-    UIStoryboard *myStoryboard = [UIStoryboard storyboardWithName:@"main"
+   UIStoryboard *myStoryboard = [UIStoryboard storyboardWithName:@"main"
                                                            bundle:[NSBundle mainBundle]];
     self.collectionViewController = [myStoryboard instantiateViewControllerWithIdentifier:@"collectionViewController"];
     self.collectionViewController.clearsSelectionOnViewWillAppear = NO;
@@ -90,7 +93,7 @@
     view.drawableMultisample = GLKViewDrawableMultisample4X;
     
     
-	[view bindDrawable];
+//	[view bindDrawable];
     ////jesture //////
     UITapGestureRecognizer * dtRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
     dtRec.numberOfTapsRequired = 2;
@@ -193,7 +196,7 @@
     friction = 0.90;
     durationRemaining = _duration;
     velocity = GLKVector3Make(0,0,0);
-    zoomscale = 1.0;
+   
     rows=20;
     cols=25;
     radius = 1;
@@ -305,9 +308,16 @@
             txtr = GLKVector2Make(s, t); // TL
             plane.texCoord[5] = txtr;
             
-            plane.colorId = index;
+            plane.colorId = index+1;
+            
+            
+			int red = plane.colorId % 255;
+			int green = plane.colorId>= 255 ? (plane.colorId/255)%255 : 0;
+			int blue = plane.colorId>=255*255 ? (plane.colorId/255)/255 : 0;
+			GLKVector4 colorV  = GLKVector4Make(red/255.0f, green/255.0f, blue/255.0f, 1);
+
             //Colors
-            GLKVector4 colorV =  GLKVector4Make((i+0.0f)/rows, (j+0.0f)/cols, 0.0, 1.0);//white color
+//            GLKVector4 colorV =  GLKVector4Make((i+0.0f)/rows, (j+0.0f)/cols, 0.0, 1.0);//white color
             plane.colors[0]= colorV;
             plane.colors[1]= colorV;
             plane.colors[2]= colorV;
@@ -338,7 +348,7 @@
     
 }
 
--(void) changeView:(ViewType*)viewType{
+-(void) changeView:(ViewType)viewType{
     pickingMode=NO;
     self.viewType = viewType;
     self.viewChanged=YES;
@@ -435,7 +445,7 @@
             plane.vertices[4] = vrtx;
             
             //TL
-            vrtx = GLKVector3Make(c.x - plane.width/2,  c.y + eachHeight/2 ,  c.z ) ;
+            vrtx = GLKVector3Make(c.x - plane.width/2,  c.y + plane.height/2 ,  c.z ) ;
             vrtx =  GLKMatrix3MultiplyVector3(rot, vrtx);
             vrtx = GLKVector3Add(vrtx, plane.center);
             plane.vertices[5] = vrtx;
@@ -566,6 +576,8 @@
     taps=0;
     zoomscale = 1;
     modelTranslation = GLKVector3Make(0.0, 0.0, zTranslation);
+    modelrotation = GLKVector3Make(0, 0, 0);
+    currentRotation = GLKVector3Make(0, 0, 0);
     _rotMatrix = GLKMatrix4Identity;
 
     glEnable(GL_DEPTH_TEST);
@@ -584,8 +596,11 @@
     self.effect.texture2d0.name = info.name;
     self.shapes = [NSMutableArray array];
     
-    [self makePlanes];
-    //     [self makeGlobe];
+    if(self.viewType==WALL){
+        [self makePlanes];}
+    else if (self.viewType==GLOBE){
+       [self makeGlobe];
+    }
     
 	GLK2DrawCall* drawObject = [[GLK2DrawCall alloc] init ];
     drawObject.mode = GL_TRIANGLES;
@@ -607,7 +622,21 @@
                            numOfFloats:2
                                 stride:sizeof(CustomPlane)
                                 offset:(void *)offsetof(CustomPlane, textureCoords) ];
+
+    [drawObject.VAO addVBOForAttribute:GLKVertexAttribColor
+                        filledWithData:self.planes //addres of the bytes to copy
+                           numVertices:drawObject.numOfVerticesToDraw
+                           numOfFloats:2
+                                stride:sizeof(CustomPlane)
+                                offset:(void *)offsetof(CustomPlane, colorCoords) ];
+
+    NSString *bufferType = [NSString stringWithFormat:@"%d",GLKVertexAttribPosition];
+    vertexBuffer = [(GLK2BufferObject*)[drawObject.VAO.VBOs objectForKey:bufferType] glName];
+    NSLog(@"vertex %d", vertexBuffer);
     
+    bufferType = [NSString stringWithFormat:@"%d",GLKVertexAttribColor];
+    colorBuffer = [(GLK2BufferObject*)[drawObject.VAO.VBOs objectForKey:bufferType] glName];
+    NSLog(@"vertex %d", colorBuffer);
     
     [self.shapes addObject: drawObject];
     
@@ -631,8 +660,9 @@
 
 -(void) resetView{
     
-    resetCalled = YES;
-    zTranslation = 3.0;
+//    resetCalled = YES;
+    modelTranslation.z = zTranslation;
+    modelrotation = GLKVector3Make(0, 0, 0);
     _rotMatrix = GLKMatrix4Identity;
     velocity = GLKVector3Make(0, 0, 0);
     touchEnded = YES;
@@ -651,12 +681,26 @@
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.001f, 100.0f);
     self.effect.transform.projectionMatrix = projectionMatrix;
+
+// example code
+    //    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeRotation(GLKMathDegreesToRadians(0.0f), 0.0f, 0.0f, 1.0f);
+//    modelViewMatrix = GLKMatrix4Translate(modelViewMatrix, modelTranslation.x, -modelTranslation.y, -modelTranslation.z);
+//    GLKMatrix4 rotymatrix   = GLKMatrix4MakeYRotation(modelrotation.y);
+//	GLKMatrix4 rotxmatrix  = GLKMatrix4MakeXRotation(modelrotation.x);
+//	GLKMatrix4 baseRotMatrix = rotxmatrix;
+//	baseRotMatrix = GLKMatrix4Multiply(baseRotMatrix, rotymatrix);
+//	baseRotMatrix = GLKMatrix4Multiply(modelViewMatrix, baseRotMatrix);
+//    self.effect.transform.modelviewMatrix = baseRotMatrix;
+
+    //my code
     
     GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -modelTranslation.z);
     modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, _rotMatrix);
     self.effect.transform.modelviewMatrix = modelViewMatrix;
+    
     self.effect.texture2d0.enabled = YES;
     [self renderSingleFrame];
+//    [self   drawInBackBuffer];
 }
 
 -(void) update {
@@ -665,11 +709,13 @@
     //change the vertex positions here for animation
     GLK2DrawCall* drawObject = [self.shapes objectAtIndex:0];
     
-    if(resetCalled){
-        _rotMatrix = GLKMatrix4Identity;
-        resetCalled = NO;
-        return;
-    }
+//    if (modelrotation.x>M_PI) modelrotation.x -= M_PI*2;
+//	else if (modelrotation.x<-M_PI) modelrotation.x += M_PI*2;
+//	if (modelrotation.y>M_PI) modelrotation.y -= M_PI*2;
+//	else if (modelrotation.y<-M_PI) modelrotation.y += M_PI*2;
+//	if (modelrotation.z>M_PI) modelrotation.z -= M_PI*2;
+//	else if (modelrotation.z<-M_PI) modelrotation.z += M_PI*2;
+//    
     
     if(self.viewChanged) {
         if(pickingMode) {
@@ -686,19 +732,23 @@
                                        offset:(void *)offsetof(CustomPlane, positionCoords)];
         
     }
-    if(touchEnded && velocityLength>0.01){
-        float rotX = GLKMathDegreesToRadians(velocity.y );
-        float rotY = GLKMathDegreesToRadians(velocity.x );
+    if(touchEnded && velocityLength>0.001){
+        
+        float rotX = GLKMathDegreesToRadians(velocity.x );
+        float rotY = GLKMathDegreesToRadians(velocity.y );
+        
         bool isInvertible;
         //inverting to get the world coordinate in order to get the correct axis of rotation
         GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible),
                                                      GLKVector3Make(1, 0, 0));
         _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
-        
-        
         GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible),
                                                      GLKVector3Make(0, 1, 0));
         _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z);
+        
+//        modelrotation.x += velocity.x;
+//		modelrotation.y += velocity.y;
+//		modelrotation.z += velocity.z;
         
         velocity.y = velocity.y * friction;
         velocity.x = velocity.x * friction;
@@ -744,7 +794,7 @@
 		scale = zoomscale * sender.scale;
 		if (scale>4.0) scale = 4.0;
 		else if (scale<0.25) scale = 0.25;
-		modelTranslation.z = zTranslation / scale;
+		modelTranslation.z = zTranslation/scale;
 	}
 	else if (sender.state==UIGestureRecognizerStateEnded){
 		zoomscale *= sender.scale;
@@ -763,12 +813,17 @@
     float rotX;
     float rotY;
     
+    CGPoint velo = [recognizer velocityInView:self.view];
+    CGPoint diff = [recognizer translationInView:self.view];
+
+    
     if (recognizer.state==UIGestureRecognizerStateBegan) {
         touchEnded = NO;
         velocity.x=0;
         velocity.y=0;
-        rotY=0.0;
-        rotX=0.0;
+//        currentRotation.x = modelrotation.x;
+//        currentRotation.y = modelrotation.y;
+//        currentRotation.z = modelrotation.z;
     } else if (recognizer.state==UIGestureRecognizerStateChanged) {
         //For every pixel the user drags, we rotate the cube 1/2 degree.
         //when the user drags from left to right, we actually want to rotate around the y axis (rotY)
@@ -778,9 +833,12 @@
         }
         //else continue
         
-        CGPoint diff = [recognizer translationInView:self.view];
-        rotX = GLKMathDegreesToRadians(diff.y * 0.01);
-        rotY = GLKMathDegreesToRadians(diff.x * 0.01);
+        rotX = GLKMathDegreesToRadians(diff.y) * 0.01;
+        rotY = GLKMathDegreesToRadians(diff.x) * 0.01;
+        
+//        modelrotation.x = currentRotation.x+ diff.y*0.01;
+//        modelrotation.y = currentRotation.y+ diff.x*0.01;
+        
         
         bool isInvertible;
         GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible),
@@ -793,15 +851,62 @@
         
     } else if (recognizer.state==UIGestureRecognizerStateEnded) {
         touchEnded = YES;
-        CGPoint velo = [recognizer velocityInView:self.view];
-        
-        velocity.x = velo.x*0.01;
-        velocity.y = velo.y*0.01;
+        velocity.x = velo.y*0.01;
+        velocity.y = velo.x*0.01;
         
     }
 }
 
 
+
+
+- (void)renderBackBuffer {
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
+	GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.001f, 100.0f);
+    self.effect.transform.projectionMatrix = projectionMatrix;
+    
+    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -modelTranslation.z);
+    modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, _rotMatrix);
+    self.effect.transform.modelviewMatrix = modelViewMatrix;
+    self.effect.transform.modelviewMatrix = modelViewMatrix;
+	
+    self.effect.texture2d0.enabled = GL_FALSE;
+    [self.effect prepareToDraw];
+	
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
+    
+    //preparing attributes
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    glVertexAttribPointer(
+                          GLKVertexAttribPosition,
+                          3,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(CustomPlane),
+                          (void *)offsetof(CustomPlane, positionCoords)
+                          );
+    
+    
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	glEnableVertexAttribArray(GLKVertexAttribColor);
+    glVertexAttribPointer(
+                          GLKVertexAttribColor,
+                          4,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(CustomPlane),
+                          (void *)offsetof(CustomPlane, colorCoords)
+                          );
+
+//    glBindFramebuffer(GL_FRAMEBUFFER, pickFBO);
+    glDrawArrays(GL_TRIANGLES, 0, rows*cols*6);
+
+}
 
 /////////////////////////////////////////////////////////////////
 - (void)pickPlaneAtViewLocation: (CGPoint)aViewLocation {
@@ -812,18 +917,21 @@
              @"View controller's view is not a GLKView");
     
     // Make the view's context current
-    [EAGLContext setCurrentContext:glView.context];
+//    [EAGLContext setCurrentContext:glView.context];
     
     
     const GLfloat width = [glView drawableWidth];
     const GLfloat height = [glView drawableHeight];
-    
+    GLuint colorRenderbuffer;
+    GLuint depthRenderbuffer;
+
     
     NSAssert(0 < width && 0 < height, @"Invalid drawble size");
     
     glBindVertexArrayOES(0);
     //generate frame buffer
-    if(0 == pickFBO)
+//    if(0 == pickFBO) // just create the frame buffer rather than creating everything, so other creation will be there every time
+    
     {
         NSInteger height = ((GLKView *)self.view).drawableHeight;
         NSInteger width = ((GLKView *)self.view).drawableWidth;
@@ -834,16 +942,15 @@
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         
         //  Create a color renderbuffer, allocate storage for it, and attach it to the framebuffer’s color attachment point.
-        GLuint colorRenderbuffer;
         glGenRenderbuffers(1, &colorRenderbuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, width, height);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER, colorRenderbuffer);
         
-        GLuint depthRenderbuffer;
+        
         glGenRenderbuffers(1, &depthRenderbuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24_OES, width, height);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
         
         GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER) ;
@@ -859,49 +966,9 @@
             }
         }
 #endif
-        pickFBO = framebuffer;//[self buildFBOWithWidth:width height:height];
+        pickFBO = framebuffer;
     }
-    
-    
-    //preparing attributes
-    glVertexAttribPointer(
-                          GLKVertexAttribPosition,
-                          3,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          sizeof(CustomPlane),
-                          (void *)offsetof(CustomPlane, positionCoords)
-                          );
-    glVertexAttribPointer(
-                          GLKVertexAttribColor,
-                          4,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          sizeof(CustomPlane),
-                          (void *)offsetof(CustomPlane, colorCoords)
-                          );
-    
-    glEnableVertexAttribArray(GLKVertexAttribColor);
-    glEnableVertexAttribArray(GLKVertexAttribPosition);
-    glBindFramebuffer(GL_FRAMEBUFFER, pickFBO);
-    
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    float aspect = fabsf(width/height);
-	GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.001f, 100.0f);
-    self.effect.transform.projectionMatrix = projectionMatrix;
-
-    
-    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -zTranslation);
-    modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, _rotMatrix);
-    self.effect.transform.modelviewMatrix = modelViewMatrix;
-    self.effect.texture2d0.enabled = GL_FALSE;
-    
-    [self.effect prepareToDraw];
-    glDisable(GL_BLEND);
-	glDepthMask(GL_TRUE);
-    glDrawArrays(GL_TRIANGLES, 0, rows*cols*6);
     
 #ifdef DEBUG
     {  // Report any errors
@@ -913,27 +980,31 @@
     }
 #endif
     
+    
+    [self renderBackBuffer];
+    
+    
     Byte pixelColor[4] = {0,};
     CGFloat scale = UIScreen.mainScreen.scale;
     glReadPixels(aViewLocation.x*scale, height- aViewLocation.y*scale, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixelColor);
-    
-    
+    NSLog(@"R:%hhu,G:%hhu,B:%hhu", pixelColor[0], pixelColor[1], pixelColor[2]);
+
     self.effect.texture2d0.enabled = YES;
     
     glDisableVertexAttribArray(GLKVertexAttribColor);
-    glBindVertexArrayOES(0); //unbind the vertex array, as a precaution against accidental changes by other classes
     
-    //    // Get info for picked location in pickInfo
-    //    // Restore OpenGL state that picking changed
+//    glDeleteRenderbuffers(1, &colorRenderbuffer);
+//	glDeleteRenderbuffers(1, &depthRenderbuffer);
+
+    glBindVertexArrayOES(0); //unbind the vertex array, as a precaution against accidental changes by other classes
+    // Restore OpenGL state that picking changed
     glBindFramebuffer(GL_FRAMEBUFFER, 0); // default frame buffer
     
-    //   NSLog(@"R:%hhu,G:%hhu,B:%hhu", pixelColor[0], pixelColor[1], pixelColor[2]);
+    int ind = (pixelColor[0] + pixelColor[1]*255 + pixelColor[2] * 255 * 255);// (row*cols)+col;
+    if(ind==0) return;
+    ind -=1;
     
-    int row = (pixelColor[0]*rows/255.0)+ 0.5;
-    int col = (pixelColor[1]*cols/255.0)+0.5;
-    
-    int ind = (row*cols)+col;
-    //    NSLog(@"Row: %d, Col:%d, %d", row, col, ind);
+    NSLog(@"%d ", ind);
     if(currentTween>-1){
         //current becomes prev and goes back to its original position
         prevTween = currentTween;
@@ -981,11 +1052,12 @@
 - (void)doubleTap:(UITapGestureRecognizer *)tap {
     
     CGPoint loc = [tap locationInView:[self view]];
+    pickingMode = YES;
     [self pickPlaneAtViewLocation:loc];
     self.viewChanged = YES;
     totalTimeElapsed=0.0;
     durationRemaining = _duration;
-    pickingMode = YES;
+    
     
 }
 
@@ -993,15 +1065,17 @@
 -(IBAction) openFunctionMenu:(id) sender {
     
     UIButton* button = sender;
-    
-    CustomCollectionViewController* content = self.collectionViewController;
+
     
     if(!self.popOverController){
+        
+        CustomCollectionViewController* content = self.collectionViewController;
         self.popOverController = [[UIPopoverController alloc]
                                   initWithContentViewController:content];
         self.popOverController.delegate = self;
         self.popOverController.backgroundColor=[UIColor colorWithRed:0.2 green:0.2 blue:0.22 alpha:0.8];
     }
+    
     [self.popOverController presentPopoverFromRect: button.frame
                                             inView: self.view
                           permittedArrowDirections:UIPopoverArrowDirectionAny
@@ -1010,7 +1084,7 @@
 
 //may not be needed anymore
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController{
-    NSLog(@"popover closed");
+//    NSLog(@"popover closed");
     [self setTweenFunction:[[self collectionViewController] selectedFunction]];
 }
 

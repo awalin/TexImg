@@ -8,9 +8,6 @@
 @class TexImgTweenFunction;
 @class CustomCollectionViewController;
 
-@interface ViewController : GLKViewController  <UIPopoverControllerDelegate>
-
-
 typedef struct {
     GLKVector3 positionCoords;
     GLKVector2 textureCoords;
@@ -24,7 +21,7 @@ typedef enum {
     RESET
 } ViewType;
 
-
+@interface ViewController : GLKViewController  <UIPopoverControllerDelegate>
 
 @property CustomCollectionViewController* collectionViewController;
 @property UIPopoverController* popOverController;
@@ -34,10 +31,9 @@ typedef enum {
 @property NSMutableArray* tweens;
 @property NSMutableArray* allPlanes;
 
-
-
 @property BOOL viewChanged;
-@property ViewType* viewType;@property double latMx;
+@property ViewType viewType;
+@property double latMx;
 @property double longMx;
 @property double latMn;
 @property double longMn;
@@ -57,7 +53,7 @@ typedef enum {
 -(void) makePlanes;
 -(void) makeGlobe;
 -(void) resetView;
--(void) changeView:(ViewType*)viewType;
+-(void) changeView:(ViewType)viewType;
 -(void) setupGL;
 -(void) setTweenFunction:(NSString*) function;
 

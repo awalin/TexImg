@@ -13,7 +13,6 @@
 
 @interface CustomCollectionViewController : UICollectionViewController <UICollectionViewDataSource, UICollectionViewDelegate>
 
-//@property IBOutlet TexImgCollectionHeaderView* header;
 @property (strong, nonatomic) NSMutableArray *tweenFunctionImages;
 @property (nonatomic, strong) NSIndexPath *selectedItemIndexPath;
 @property NSInteger selectedSection;
