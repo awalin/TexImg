@@ -813,31 +813,78 @@
     float rotX;
     float rotY;
     
+    
     CGPoint velo = [recognizer velocityInView:self.view];
     CGPoint diff = [recognizer translationInView:self.view];
-
     
+   
+
     if (recognizer.state==UIGestureRecognizerStateBegan) {
         touchEnded = NO;
-        velocity.x=0;
-        velocity.y=0;
-//        currentRotation.x = modelrotation.x;
-//        currentRotation.y = modelrotation.y;
-//        currentRotation.z = modelrotation.z;
+        velocity.x = 0;
+        velocity.y = 0;
+        
+        rotX = 0;//GLKMathDegreesToRadians(diff.y * 0.05);
+        rotY = 0;//GLKMathDegreesToRadians(diff.x * 0.05);
+        
+        //          if (rotX>M_PI) rotX -= M_PI*2;
+        //          else if (rotX<-M_PI) rotX += M_PI*2;
+        //
+        //
+        //          if (rotY>M_PI) rotY -= M_PI*2;
+        //        	else if (rotY<-M_PI) rotY += M_PI*2;
+        //
+        
+        //        modelrotation.x = currentRotation.x+ diff.y*0.01;
+        //        modelrotation.y = currentRotation.y+ diff.x*0.01;
+        
+        
+        bool isInvertible;
+        GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible),
+                                                     GLKVector3Make(1, 0, 0));
+        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
+        
+        GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible),
+                                                     GLKVector3Make(0, 1, 0));
+        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z);
+
+        
+        
+//        _rotMatrix = GLKMatrix4Identity;
+        
+//        NSLog(@"Touch began ");
+      
+        //        currentRotation.x = modelrotation.x;
+        //        currentRotation.y = modelrotation.y;
+        //        currentRotation.z = modelrotation.z;
     } else if (recognizer.state==UIGestureRecognizerStateChanged) {
         //For every pixel the user drags, we rotate the cube 1/2 degree.
         //when the user drags from left to right, we actually want to rotate around the y axis (rotY)
-        
+//        NSLog(@"Touch changed ");
         if(touchEnded) {
             return;
         }
+        
+        
+        
         //else continue
         
-        rotX = GLKMathDegreesToRadians(diff.y) * 0.01;
-        rotY = GLKMathDegreesToRadians(diff.x) * 0.01;
+        velocity.x = 0;
+        velocity.y = 0;
         
-//        modelrotation.x = currentRotation.x+ diff.y*0.01;
-//        modelrotation.y = currentRotation.y+ diff.x*0.01;
+        rotX = GLKMathDegreesToRadians(diff.y * 0.05);
+        rotY = GLKMathDegreesToRadians(diff.x * 0.05);
+        
+//          if (rotX>M_PI) rotX -= M_PI*2;
+//          else if (rotX<-M_PI) rotX += M_PI*2;
+//        
+//        
+//          if (rotY>M_PI) rotY -= M_PI*2;
+//        	else if (rotY<-M_PI) rotY += M_PI*2;
+//        
+        
+        //        modelrotation.x = currentRotation.x+ diff.y*0.01;
+        //        modelrotation.y = currentRotation.y+ diff.x*0.01;
         
         
         bool isInvertible;
@@ -849,11 +896,16 @@
                                                      GLKVector3Make(0, 1, 0));
         _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z);
         
-    } else if (recognizer.state==UIGestureRecognizerStateEnded) {
+    }
+    else if (recognizer.state==UIGestureRecognizerStateEnded) {
         touchEnded = YES;
         velocity.x = velo.y*0.01;
         velocity.y = velo.x*0.01;
+        NSLog(@"Touch ended ");
         
+    }else {
+    
+        NSLog(@" touch stopped ");
     }
 }
 
