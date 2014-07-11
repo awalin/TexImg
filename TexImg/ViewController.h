@@ -47,6 +47,8 @@ typedef enum {
 @property IBOutlet UISlider* durationSlider;
 @property IBOutlet UISlider* delaySlider;
 @property IBOutlet UISegmentedControl* viewTypeSegments;
+@property IBOutlet UIButton* tweenButton;
+@property IBOutlet UIButton* resetButton;
 
 -(void) setDuration:(float) val;
 -(void) setDelay:(float) val;

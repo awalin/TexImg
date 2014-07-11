@@ -85,7 +85,14 @@
     self.collectionViewController.clearsSelectionOnViewWillAppear = NO;
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleEasing:) name:@"Easing" object:nil];
-
+    
+    [[self.tweenButton layer] setBorderColor:[UIColor colorWithRed:204.0f/255.0 green:204.0f/255.0 blue:255.0/255 alpha:1].CGColor];
+    [[self.tweenButton layer] setCornerRadius:4.0f];
+    [[self.tweenButton layer] setBorderWidth:2.0f];
+    
+    [[self.resetButton layer] setBorderColor:[UIColor colorWithRed:204.0f/255.0 green:204.0f/255.0 blue:255.0/255 alpha:1].CGColor];
+    [[self.resetButton layer] setCornerRadius:4.0f];
+    [[self.resetButton layer] setBorderWidth:2.0f];
 	
 	/** Enable GL rendering by enabling the GLKView (enable it by giving it an EAGLContext to render to) */
 	GLKView *view = (GLKView *)self.view;
@@ -115,7 +122,7 @@
 
 
 -(void) makePlanes{
-    
+    NSLog(@"%f after wal called ", offsetY);
     GLfloat s=0.0,t=0.0;
     GLfloat y = offsetY+ eachHeight/2;
     //the first plane is on the BL corner of the screen
@@ -211,29 +218,32 @@
     
     prevTweens = [[NSMutableDictionary alloc] init];
     
-    spanX = 2.0*5/4;
-    offsetX = -1.0;
+    spanX = 2.0*cols/rows;
+    offsetX = -1.0*cols/rows;
     
     spanY = 2.0f;//rect.size.height;// 2.0;
     offsetY = -1.0f;
+    
+      NSLog(@"%f nit  called ", offsetY);
     // (u, v) is the centre of the texture
     eachWidth = spanX/cols;
     eachHeight = spanY/rows;
     
+//    float planeSize = fminf(eachHeight, eachWidth);
+    
     GLfloat s=0.0,t=0.0;
     GLfloat u=0.0,v=0.0;
     GLKVector2 txtr;
-    float spanTX = 1.0; //rect.size.width;//2.0;
-    float offsetTX = 0.0;
     
-    float spanTY = 1.0f;//rect.size.height;// 2.0;
-    float offsetTY = 0.0f;
+    float spanTX = 1.0;
+    float spanTY = 1.0f;
+    
     GLfloat eachWidthT = spanTX/cols;
     GLfloat eachHeightT = spanTY/rows;
     
     // centre point for each plane
-    v = offsetTY+ eachHeightT/2;
-    GLfloat y = offsetY+ eachHeight/2;
+    v =  eachHeightT/2;
+    GLfloat y =  eachHeight/2 + offsetY;
     GLfloat eachTheta = GLKMathDegreesToRadians(180.0f/rows);
     // 0 to 180, inclination from vertical axis, bottom row, inclination 180, top row inclination 0
     GLfloat eachPhi = GLKMathDegreesToRadians(360.0f/cols); // 0 to 360, azimuthal, 14.
@@ -244,8 +254,7 @@
         
         GLfloat x = offsetX + eachWidth/2;
         float phi = GLKMathDegreesToRadians(-180.0f); // j*eachPhi;
-        
-        u = offsetTX + eachWidthT/2; // center x of texture
+        u =  eachWidthT/2; // center x of texture
         int j;
         for( j =0; j < cols; j++) { // fixed theta
             
@@ -256,8 +265,11 @@
             plane.phi = phi;
             plane.row = i;
             plane.col = j;
-            plane.height = eachHeight*0.9;
-            plane.width= eachWidth*0.9;
+//            plane.height =  planeSize*0.9;//eachHeight*0.9;
+//            plane.width= planeSize*0.9 ;//eachWidth*0.9;
+            
+            plane.height =  eachHeight*0.9;
+            plane.width = eachWidth*0.9;
             
             TexImgTween* tween = [[TexImgTween alloc] init];
             tween.planeId = index;
@@ -322,7 +334,6 @@
 			GLKVector4 colorV  = GLKVector4Make(red/255.0f, green/255.0f, blue/255.0f, 1);
 
             //Colors
-//            GLKVector4 colorV =  GLKVector4Make((i+0.0f)/rows, (j+0.0f)/cols, 0.0, 1.0);//white color
             plane.colors[0]= colorV;
             plane.colors[1]= colorV;
             plane.colors[2]= colorV;
