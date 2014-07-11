@@ -49,6 +49,7 @@
     GLuint glColorAttributeBufferID;
     int currentTween;
     int prevTween;
+    NSMutableDictionary* prevTweens;
     
     GLuint vertexBuffer;
     GLuint colorBuffer;
@@ -195,7 +196,7 @@
     self.tweens = [[NSMutableArray alloc] initWithCapacity:500];
     self.shapes = [[NSMutableArray alloc] init];
     touchEnded = NO;
-    friction = 0.90;
+    friction = 0.80;
     durationRemaining = _duration;
     velocity = GLKVector3Make(0,0,0);
    
@@ -207,6 +208,8 @@
     
     prevTween=-1;
     currentTween=-1;
+    
+    prevTweens = [[NSMutableDictionary alloc] init];
     
     spanX = 2.0*5/4;
     offsetX = -1.0;
@@ -682,45 +685,13 @@
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.001f, 100.0f);
     self.effect.transform.projectionMatrix = projectionMatrix;
 
-// example code
-    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeRotation(GLKMathDegreesToRadians(0.0f), 0.0f, 0.0f, 1.0f);
-    baseModelViewMatrix = GLKMatrix4Translate(baseModelViewMatrix, modelTranslation.x, -modelTranslation.y, -modelTranslation.z);
+    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -modelTranslation.z);
 	GLKMatrix4 rotymatrix   = GLKMatrix4MakeYRotation(modelrotation.y);
 	GLKMatrix4 rotxmatrix  = GLKMatrix4MakeXRotation(modelrotation.x);
 	GLKMatrix4 modelViewMatrix = rotxmatrix;
 	modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotymatrix);
 	modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
-    
-    
-	self.effect.transform.modelviewMatrix = modelViewMatrix;
-
-
-    //my code
-    
-//    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -modelTranslation.z);
-    
-    
-//    GLKMatrix4 xRot = GLKMatrix4MakeXRotation(modelrotation.x);
-//    
-//    GLKMatrix4 yRot = GLKMatrix4MakeXRotation(modelrotation.y);
-//    
-//    GLKMatrix4 baseRot = GLKMatrix4Multiply(xRot, yRot);
-//    
-//    modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, baseRot);
-    
-// mtrix method
-    
-//    GLKMatrix4 rotMatrix = GLKMatrix4Identity;
-//    bool isInvertible;
-//    
-//    GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(rotMatrix, &isInvertible),
-//                                                 GLKVector3Make(1, 0, 0));
-//    rotMatrix = GLKMatrix4Rotate(rotMatrix, modelrotation.x, xAxis.x, xAxis.y, xAxis.z);
-//    GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(rotMatrix, &isInvertible),
-//                                                 GLKVector3Make(0, 1, 0));
-//    rotMatrix = GLKMatrix4Rotate(rotMatrix, modelrotation.y, yAxis.x, yAxis.y, yAxis.z);
-//    modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotMatrix);
-//    self.effect.transform.modelviewMatrix = modelViewMatrix;
+    self.effect.transform.modelviewMatrix = modelViewMatrix;
     
     self.effect.texture2d0.enabled = YES;
     [self renderSingleFrame];
@@ -841,19 +812,16 @@
         //when the user drags from left to right, we actually want to rotate around the y axis (rotY)
         NSLog(@"Touch drag ");
         if(touchEnded) return;
-//        
-//        velocity.x = 0;
-//        velocity.y = 0;
-//        
-        moveToPoint = [recognizer locationInView:self.view];
+        
+//        moveToPoint = [recognizer locationInView:self.view];
         NSLog(@"move %F, %f", moveToPoint.x, moveToPoint.y);
 //        
 //        diff.x = moveToPoint.x - startPoint.x;
 //        diff.y = moveToPoint.y - startPoint.y;
 
         NSLog(@"%f, %f", diff.x, diff.y);
-        modelrotation.x +=  (diff.y * 0.01);
-        modelrotation.y +=  (diff.x * 0.01);
+        modelrotation.x =  currentRotation.x+ (diff.y * 0.01);
+        modelrotation.y =  currentRotation.y+ (diff.x * 0.01);
 
         
     }
@@ -864,8 +832,8 @@
     }
     }else if (recognizer.state==UIGestureRecognizerStateEnded)  {
     
-        velocity.x = velo.y*0.005;
-        velocity.y = velo.x*0.005;
+        velocity.x = velo.y*0.0025;
+        velocity.y = velo.x*0.0025;
         NSLog(@"Touch ended ");
         touchEnded = YES;
     
@@ -883,10 +851,13 @@
 	float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
 	GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.001f, 100.0f);
     self.effect.transform.projectionMatrix = projectionMatrix;
-    
-    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -modelTranslation.z);
-//    modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, _rotMatrix);
-    self.effect.transform.modelviewMatrix = modelViewMatrix;
+
+    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -modelTranslation.z);
+	GLKMatrix4 rotymatrix   = GLKMatrix4MakeYRotation(modelrotation.y);
+	GLKMatrix4 rotxmatrix  = GLKMatrix4MakeXRotation(modelrotation.x);
+	GLKMatrix4 modelViewMatrix = rotxmatrix;
+	modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotymatrix);
+	modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
     self.effect.transform.modelviewMatrix = modelViewMatrix;
 	
     self.effect.texture2d0.enabled = GL_FALSE;
@@ -1009,8 +980,8 @@
     
     glDisableVertexAttribArray(GLKVertexAttribColor);
     
-//    glDeleteRenderbuffers(1, &colorRenderbuffer);
-//	glDeleteRenderbuffers(1, &depthRenderbuffer);
+    glDeleteRenderbuffers(1, &colorRenderbuffer);
+	glDeleteRenderbuffers(1, &depthRenderbuffer);
 
     glBindVertexArrayOES(0); //unbind the vertex array, as a precaution against accidental changes by other classes
     // Restore OpenGL state that picking changed
