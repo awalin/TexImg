@@ -22,7 +22,6 @@
                                 <segments>
                                     <segment title="Globe view" width="81"/>
                                     <segment title="Wall view"/>
-                                    <segment title="Reset"/>
                                 </segments>
                                 <color key="tintColor" red="0.6692354186548265" green="0.71345478098269288" blue="0.90148676658163263" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
@@ -111,6 +110,17 @@
                                     <action selector="addDelay:" destination="YZN-DK-qWY" eventType="valueChanged" id="w7p-9s-1zu"/>
                                 </connections>
                             </slider>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pbn-6Q-UMR">
+                                <rect key="frame" x="524" y="983" width="40" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <state key="normal" title="Reset">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="resetView:" destination="YZN-DK-qWY" eventType="touchUpInside" id="v9g-H8-37g"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="tintColor" red="0.62896665882917779" green="0.63627328188667964" blue="0.91246811224489799" alpha="1" colorSpace="calibratedRGB"/>
@@ -122,6 +132,7 @@
                             <constraint firstItem="yQP-Tg-hsu" firstAttribute="top" secondItem="ufx-fq-p1G" secondAttribute="bottom" constant="60" id="Isi-yN-zgS"/>
                             <constraint firstAttribute="bottom" secondItem="1op-48-8hu" secondAttribute="bottom" constant="60" id="LfB-AZ-B4w"/>
                             <constraint firstItem="yQP-Tg-hsu" firstAttribute="top" secondItem="Wil-4i-nlF" secondAttribute="bottom" constant="50" id="dXQ-If-oBa"/>
+                            <constraint firstAttribute="bottom" secondItem="pbn-6Q-UMR" secondAttribute="bottom" constant="13" id="eYw-nv-LhV"/>
                             <constraint firstItem="yQP-Tg-hsu" firstAttribute="top" secondItem="qSi-6I-Y4h" secondAttribute="bottom" constant="50" id="jdo-Qd-i8j"/>
                             <constraint firstItem="yQP-Tg-hsu" firstAttribute="top" secondItem="TOl-nq-4iV" secondAttribute="bottom" constant="50" id="kgp-L8-dot"/>
                             <constraint firstItem="yQP-Tg-hsu" firstAttribute="top" secondItem="Nxe-0K-Iht" secondAttribute="bottom" constant="60" id="smK-9R-DaX"/>

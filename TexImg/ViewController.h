@@ -52,12 +52,12 @@ typedef enum {
 -(void) setDelay:(float) val;
 -(void) makePlanes;
 -(void) makeGlobe;
--(void) resetView;
 -(void) changeView:(ViewType)viewType;
 -(void) setupGL;
 -(void) setTweenFunction:(NSString*) function;
 
 -(IBAction) addDelay:(id)sender;
+-(IBAction) resetView:(id) sender;
 -(IBAction) changeDuration:(id)sender;
 -(IBAction) openFunctionMenu:(id) sender;
 -(IBAction) segmentValueChanged:(id)sender;

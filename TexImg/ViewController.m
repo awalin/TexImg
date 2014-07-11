@@ -372,9 +372,6 @@
             } else if(self.viewType==WALL){
                 [[self.tweens objectAtIndex:index] setTargetCenter: tween.wallCenter];
                 [[self.tweens objectAtIndex:index] setSourceCenter: tween.globeCenter];
-            } else if(self.viewType==RESET){
-                [self resetView];
-                return;
             }
         }
     }
@@ -662,14 +659,16 @@
     
 }
 
--(void) resetView{
-    
-//    resetCalled = YES;
+-(IBAction) resetView:(id)sender{
     modelTranslation.z = zTranslation;
     modelrotation = GLKVector3Make(0, 0, 0);
     velocity = GLKVector3Make(0, 0, 0);
     touchEnded = YES;
     totalTimeElapsed = _duration;
+    pickingMode=NO;
+    self.viewChanged=YES;
+    totalTimeElapsed=0.0;
+    durationRemaining = _duration;
     
 }
 
@@ -695,7 +694,6 @@
     
     self.effect.texture2d0.enabled = YES;
     [self renderSingleFrame];
-//    [self   drawInBackBuffer];
 }
 
 -(void) update {
@@ -721,7 +719,7 @@
     }
     if(touchEnded && velocityLength>0.0001){
         
-        NSLog(@" updateing rotation with velocity ");
+//        NSLog(@" updateing rotation with velocity ");
         
         modelrotation.x += velocity.x;
         modelrotation.y += velocity.y;
@@ -802,7 +800,7 @@
         velocity.y = 0;
         startPoint = [recognizer locationInView:self.view];
 
-        NSLog(@"start  %f, %f", startPoint.x, startPoint.y);
+//        NSLog(@"start  %f, %f", startPoint.x, startPoint.y);
 
         currentRotation.x = modelrotation.x;
         currentRotation.y = modelrotation.y;
@@ -810,16 +808,16 @@
     } else if (recognizer.state==UIGestureRecognizerStateChanged) {
         //For every pixel the user drags, we rotate the cube 1/2 degree.
         //when the user drags from left to right, we actually want to rotate around the y axis (rotY)
-        NSLog(@"Touch drag ");
+//        NSLog(@"Touch drag ");
         if(touchEnded) return;
         
 //        moveToPoint = [recognizer locationInView:self.view];
-        NSLog(@"move %F, %f", moveToPoint.x, moveToPoint.y);
-//        
+//        NSLog(@"move %F, %f", moveToPoint.x, moveToPoint.y);
+//
 //        diff.x = moveToPoint.x - startPoint.x;
 //        diff.y = moveToPoint.y - startPoint.y;
 
-        NSLog(@"%f, %f", diff.x, diff.y);
+//        NSLog(@"%f, %f", diff.x, diff.y);
         modelrotation.x =  currentRotation.x+ (diff.y * 0.01);
         modelrotation.y =  currentRotation.y+ (diff.x * 0.01);
 
@@ -827,14 +825,11 @@
     }
     else if (recognizer.state==UIGestureRecognizerStateEnded) {
         touchEnded = YES;
-       
-        
-    }
+       }
     }else if (recognizer.state==UIGestureRecognizerStateEnded)  {
-    
         velocity.x = velo.y*0.0025;
         velocity.y = velo.x*0.0025;
-        NSLog(@"Touch ended ");
+//        NSLog(@"Touch ended ");
         touchEnded = YES;
     
     }
@@ -843,7 +838,7 @@
 
 
 
-
+//for picking
 - (void)renderBackBuffer {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -895,7 +890,7 @@
 
 }
 
-/////////////////////////////////////////////////////////////////
+
 - (void)pickPlaneAtViewLocation: (CGPoint)aViewLocation {
     
     //    NSLog(@"inside picking by location");
@@ -995,9 +990,9 @@
     if(currentTween>-1){
         //current becomes prev and goes back to its original position
         prevTween = currentTween;
+        
         TexImgTween* tweenp = [self.tweens objectAtIndex:prevTween];
         TexImgPlane* planep = [self.allPlanes objectAtIndex:prevTween];
-
         if(self.viewType==WALL)
             tweenp.targetCenter = tweenp.wallCenter;
         else if (self.viewType==GLOBE){
@@ -1005,6 +1000,9 @@
             tweenp.targetPhi = planep.phi;
             tweenp.targetTheta = planep.theta;
         }
+        //add the prev tween to the queue
+        NSString* pt= [NSString stringWithFormat:@"%d", prevTween];
+        [prevTweens setObject:tweenp forKey:pt];
 
     }
     //now deal with the new one
@@ -1012,7 +1010,6 @@
     TexImgTween* tween = [self.tweens objectAtIndex:ind];
     TexImgPlane* plane = [self.allPlanes objectAtIndex:ind];
     if(currentTween==prevTween){ // go back to the wall or to the globe
-        
         if(self.viewType==WALL)
             tween.targetCenter = tween.wallCenter;
         else if (self.viewType==GLOBE){
