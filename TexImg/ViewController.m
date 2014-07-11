@@ -23,7 +23,6 @@
     GLfloat zoomscale;
     GLKVector3 modelTranslation;
     GLKVector3 modelrotation;
-    GLKMatrix4 _rotMatrix;
     GLfloat zTranslation;
     NSTimeInterval _duration;
     NSTimeInterval delay;
@@ -53,6 +52,9 @@
     
     GLuint vertexBuffer;
     GLuint colorBuffer;
+    
+    CGPoint startPoint;
+    CGPoint moveToPoint;
 }
 
 
@@ -578,7 +580,6 @@
     modelTranslation = GLKVector3Make(0.0, 0.0, zTranslation);
     modelrotation = GLKVector3Make(0, 0, 0);
     currentRotation = GLKVector3Make(0, 0, 0);
-    _rotMatrix = GLKMatrix4Identity;
 
     glEnable(GL_DEPTH_TEST);
     
@@ -663,7 +664,6 @@
 //    resetCalled = YES;
     modelTranslation.z = zTranslation;
     modelrotation = GLKVector3Make(0, 0, 0);
-    _rotMatrix = GLKMatrix4Identity;
     velocity = GLKVector3Make(0, 0, 0);
     touchEnded = YES;
     totalTimeElapsed = _duration;
@@ -683,20 +683,44 @@
     self.effect.transform.projectionMatrix = projectionMatrix;
 
 // example code
-    //    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeRotation(GLKMathDegreesToRadians(0.0f), 0.0f, 0.0f, 1.0f);
-//    modelViewMatrix = GLKMatrix4Translate(modelViewMatrix, modelTranslation.x, -modelTranslation.y, -modelTranslation.z);
-//    GLKMatrix4 rotymatrix   = GLKMatrix4MakeYRotation(modelrotation.y);
-//	GLKMatrix4 rotxmatrix  = GLKMatrix4MakeXRotation(modelrotation.x);
-//	GLKMatrix4 baseRotMatrix = rotxmatrix;
-//	baseRotMatrix = GLKMatrix4Multiply(baseRotMatrix, rotymatrix);
-//	baseRotMatrix = GLKMatrix4Multiply(modelViewMatrix, baseRotMatrix);
-//    self.effect.transform.modelviewMatrix = baseRotMatrix;
+    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeRotation(GLKMathDegreesToRadians(0.0f), 0.0f, 0.0f, 1.0f);
+    baseModelViewMatrix = GLKMatrix4Translate(baseModelViewMatrix, modelTranslation.x, -modelTranslation.y, -modelTranslation.z);
+	GLKMatrix4 rotymatrix   = GLKMatrix4MakeYRotation(modelrotation.y);
+	GLKMatrix4 rotxmatrix  = GLKMatrix4MakeXRotation(modelrotation.x);
+	GLKMatrix4 modelViewMatrix = rotxmatrix;
+	modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotymatrix);
+	modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
+    
+    
+	self.effect.transform.modelviewMatrix = modelViewMatrix;
+
 
     //my code
     
-    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -modelTranslation.z);
-    modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, _rotMatrix);
-    self.effect.transform.modelviewMatrix = modelViewMatrix;
+//    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -modelTranslation.z);
+    
+    
+//    GLKMatrix4 xRot = GLKMatrix4MakeXRotation(modelrotation.x);
+//    
+//    GLKMatrix4 yRot = GLKMatrix4MakeXRotation(modelrotation.y);
+//    
+//    GLKMatrix4 baseRot = GLKMatrix4Multiply(xRot, yRot);
+//    
+//    modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, baseRot);
+    
+// mtrix method
+    
+//    GLKMatrix4 rotMatrix = GLKMatrix4Identity;
+//    bool isInvertible;
+//    
+//    GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(rotMatrix, &isInvertible),
+//                                                 GLKVector3Make(1, 0, 0));
+//    rotMatrix = GLKMatrix4Rotate(rotMatrix, modelrotation.x, xAxis.x, xAxis.y, xAxis.z);
+//    GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(rotMatrix, &isInvertible),
+//                                                 GLKVector3Make(0, 1, 0));
+//    rotMatrix = GLKMatrix4Rotate(rotMatrix, modelrotation.y, yAxis.x, yAxis.y, yAxis.z);
+//    modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, rotMatrix);
+//    self.effect.transform.modelviewMatrix = modelViewMatrix;
     
     self.effect.texture2d0.enabled = YES;
     [self renderSingleFrame];
@@ -708,14 +732,6 @@
     float velocityLength = GLKVector3Length(velocity);
     //change the vertex positions here for animation
     GLK2DrawCall* drawObject = [self.shapes objectAtIndex:0];
-    
-//    if (modelrotation.x>M_PI) modelrotation.x -= M_PI*2;
-//	else if (modelrotation.x<-M_PI) modelrotation.x += M_PI*2;
-//	if (modelrotation.y>M_PI) modelrotation.y -= M_PI*2;
-//	else if (modelrotation.y<-M_PI) modelrotation.y += M_PI*2;
-//	if (modelrotation.z>M_PI) modelrotation.z -= M_PI*2;
-//	else if (modelrotation.z<-M_PI) modelrotation.z += M_PI*2;
-//    
     
     if(self.viewChanged) {
         if(pickingMode) {
@@ -732,28 +748,23 @@
                                        offset:(void *)offsetof(CustomPlane, positionCoords)];
         
     }
-    if(touchEnded && velocityLength>0.001){
+    if(touchEnded && velocityLength>0.0001){
         
-        float rotX = GLKMathDegreesToRadians(velocity.x );
-        float rotY = GLKMathDegreesToRadians(velocity.y );
+        NSLog(@" updateing rotation with velocity ");
         
-        bool isInvertible;
-        //inverting to get the world coordinate in order to get the correct axis of rotation
-        GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible),
-                                                     GLKVector3Make(1, 0, 0));
-        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
-        GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible),
-                                                     GLKVector3Make(0, 1, 0));
-        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z);
-        
-//        modelrotation.x += velocity.x;
-//		modelrotation.y += velocity.y;
-//		modelrotation.z += velocity.z;
-        
+        modelrotation.x += velocity.x;
+        modelrotation.y += velocity.y;
+
         velocity.y = velocity.y * friction;
         velocity.x = velocity.x * friction;
         
     }
+    
+//    if (modelrotation.x>M_PI) modelrotation.x -= M_PI*2;
+//	else if (modelrotation.x<-M_PI) modelrotation.x += M_PI*2;
+//	if (modelrotation.y>M_PI) modelrotation.y -= M_PI*2;
+//	else if (modelrotation.y<-M_PI) modelrotation.y += M_PI*2;
+
 }
 
 -(void) renderSingleFrame {
@@ -807,106 +818,59 @@
 
 
 
--(void) rotateWithPanGesture:(UIPanGestureRecognizer*) recognizer{
-    
-    //    NSLog(@"velocity %f",  velocity.x);
-    float rotX;
-    float rotY;
-    
+-(void) rotateWithPanGesture:(UIPanGestureRecognizer*) recognizer {
     
     CGPoint velo = [recognizer velocityInView:self.view];
     CGPoint diff = [recognizer translationInView:self.view];
     
+    if( [recognizer numberOfTouches]==1){
    
-
     if (recognizer.state==UIGestureRecognizerStateBegan) {
         touchEnded = NO;
         velocity.x = 0;
         velocity.y = 0;
-        
-        rotX = 0;//GLKMathDegreesToRadians(diff.y * 0.05);
-        rotY = 0;//GLKMathDegreesToRadians(diff.x * 0.05);
-        
-        //          if (rotX>M_PI) rotX -= M_PI*2;
-        //          else if (rotX<-M_PI) rotX += M_PI*2;
-        //
-        //
-        //          if (rotY>M_PI) rotY -= M_PI*2;
-        //        	else if (rotY<-M_PI) rotY += M_PI*2;
-        //
-        
-        //        modelrotation.x = currentRotation.x+ diff.y*0.01;
-        //        modelrotation.y = currentRotation.y+ diff.x*0.01;
-        
-        
-        bool isInvertible;
-        GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible),
-                                                     GLKVector3Make(1, 0, 0));
-        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
-        
-        GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible),
-                                                     GLKVector3Make(0, 1, 0));
-        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z);
+        startPoint = [recognizer locationInView:self.view];
 
-        
-        
-//        _rotMatrix = GLKMatrix4Identity;
-        
-//        NSLog(@"Touch began ");
-      
-        //        currentRotation.x = modelrotation.x;
-        //        currentRotation.y = modelrotation.y;
-        //        currentRotation.z = modelrotation.z;
+        NSLog(@"start  %f, %f", startPoint.x, startPoint.y);
+
+        currentRotation.x = modelrotation.x;
+        currentRotation.y = modelrotation.y;
+
     } else if (recognizer.state==UIGestureRecognizerStateChanged) {
         //For every pixel the user drags, we rotate the cube 1/2 degree.
         //when the user drags from left to right, we actually want to rotate around the y axis (rotY)
-//        NSLog(@"Touch changed ");
-        if(touchEnded) {
-            return;
-        }
-        
-        
-        
-        //else continue
-        
-        velocity.x = 0;
-        velocity.y = 0;
-        
-        rotX = GLKMathDegreesToRadians(diff.y * 0.05);
-        rotY = GLKMathDegreesToRadians(diff.x * 0.05);
-        
-//          if (rotX>M_PI) rotX -= M_PI*2;
-//          else if (rotX<-M_PI) rotX += M_PI*2;
+        NSLog(@"Touch drag ");
+        if(touchEnded) return;
 //        
+//        velocity.x = 0;
+//        velocity.y = 0;
 //        
-//          if (rotY>M_PI) rotY -= M_PI*2;
-//        	else if (rotY<-M_PI) rotY += M_PI*2;
+        moveToPoint = [recognizer locationInView:self.view];
+        NSLog(@"move %F, %f", moveToPoint.x, moveToPoint.y);
 //        
-        
-        //        modelrotation.x = currentRotation.x+ diff.y*0.01;
-        //        modelrotation.y = currentRotation.y+ diff.x*0.01;
-        
-        
-        bool isInvertible;
-        GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible),
-                                                     GLKVector3Make(1, 0, 0));
-        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotX, xAxis.x, xAxis.y, xAxis.z);
-        
-        GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(_rotMatrix, &isInvertible),
-                                                     GLKVector3Make(0, 1, 0));
-        _rotMatrix = GLKMatrix4Rotate(_rotMatrix, rotY, yAxis.x, yAxis.y, yAxis.z);
+//        diff.x = moveToPoint.x - startPoint.x;
+//        diff.y = moveToPoint.y - startPoint.y;
+
+        NSLog(@"%f, %f", diff.x, diff.y);
+        modelrotation.x +=  (diff.y * 0.01);
+        modelrotation.y +=  (diff.x * 0.01);
+
         
     }
     else if (recognizer.state==UIGestureRecognizerStateEnded) {
         touchEnded = YES;
-        velocity.x = velo.y*0.01;
-        velocity.y = velo.x*0.01;
-        NSLog(@"Touch ended ");
+       
         
-    }else {
-    
-        NSLog(@" touch stopped ");
     }
+    }else if (recognizer.state==UIGestureRecognizerStateEnded)  {
+    
+        velocity.x = velo.y*0.005;
+        velocity.y = velo.x*0.005;
+        NSLog(@"Touch ended ");
+        touchEnded = YES;
+    
+    }
+    
 }
 
 
@@ -921,7 +885,7 @@
     self.effect.transform.projectionMatrix = projectionMatrix;
     
     GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -modelTranslation.z);
-    modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, _rotMatrix);
+//    modelViewMatrix = GLKMatrix4Multiply(modelViewMatrix, _rotMatrix);
     self.effect.transform.modelviewMatrix = modelViewMatrix;
     self.effect.transform.modelviewMatrix = modelViewMatrix;
 	
