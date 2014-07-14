@@ -42,7 +42,7 @@
 
 -(TexImgPlane*) init;
 
--(void) updateVerticesWithTween:(TexImgTween*) tween
+-(BOOL) updateVerticesWithTween:(TexImgTween*) tween
                            mode:(ViewType)viewType
                     timeElapsed:(NSTimeInterval)timeElapsed
                        duration:(NSTimeInterval)duration

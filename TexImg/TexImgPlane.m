@@ -23,14 +23,14 @@
     return self;
 }
 
--(void) updateVerticesWithTween:(TexImgTween*) tween
+-(BOOL) updateVerticesWithTween:(TexImgTween*) tween
                            mode:(ViewType)viewType
            timeElapsed:(NSTimeInterval)timeElapsed
               duration:(NSTimeInterval)duration
                  ratio:(float)ratio {
     
     if(duration<=0.0){
-        return;
+        return NO; //no update done
     }
     GLKVector3 vrtx;
     GLfloat eachWidth = self.width;
@@ -67,7 +67,7 @@
     
     if(GLKVector3Length(distanceC) == 0){
         //change complete
-        return;
+        return NO;//no update done
     }
     self.center = vrtx;
     
@@ -91,7 +91,7 @@
             self.vertices[i]= vrtx;
         }
     }
-    
+    return YES; // update done
 }
 
 

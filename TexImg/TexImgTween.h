@@ -13,7 +13,6 @@
 
 @interface TexImgTween : NSObject
 
-@property TexImgPlane* plane;
 @property int planeId;
 
 @property GLKVector3 tweenRotation;

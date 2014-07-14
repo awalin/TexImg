@@ -102,11 +102,9 @@
     //To enable multisamle, it needs to be compiled as iPad, not univresal device.
     view.drawableMultisample = GLKViewDrawableMultisample4X;
     
-    
-//	[view bindDrawable];
     ////jesture //////
     UITapGestureRecognizer * dtRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
-    dtRec.numberOfTapsRequired = 2;
+    dtRec.numberOfTapsRequired = 1;
     [self.view addGestureRecognizer:dtRec];
     
     self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(rotateWithPanGesture:)];
@@ -224,12 +222,10 @@
     spanY = 2.0f;//rect.size.height;// 2.0;
     offsetY = -1.0f;
     
-      NSLog(@"%f nit  called ", offsetY);
+//      NSLog(@"%f init  called ", offsetY);
     // (u, v) is the centre of the texture
     eachWidth = spanX/cols;
     eachHeight = spanY/rows;
-    
-//    float planeSize = fminf(eachHeight, eachWidth);
     
     GLfloat s=0.0,t=0.0;
     GLfloat u=0.0,v=0.0;
@@ -265,8 +261,6 @@
             plane.phi = phi;
             plane.row = i;
             plane.col = j;
-//            plane.height =  planeSize*0.9;//eachHeight*0.9;
-//            plane.width= planeSize*0.9 ;//eachWidth*0.9;
             
             plane.height =  eachHeight*0.9;
             plane.width = eachWidth*0.9;
@@ -275,7 +269,6 @@
             tween.planeId = index;
             tween.targetPhi = phi;
             tween.targetTheta = theta;
-            tween.plane = plane;
             tween.delay = index*delay;
             
             GLfloat x1 = radius*sin(plane.theta)*cos(plane.phi);
@@ -494,30 +487,44 @@
     if(currentTween<0){
         return;
     }
+    BOOL updateDone;
+    int toRemove =-1;
     //first deal with prev tween, take it back to the wall
-    if(prevTween>-1){
+    if(prevTween>-1)
+    for( id prevTweenInQ in prevTweens) {
         NSTimeInterval timeElapsed = [self timeSinceLastUpdate];
-        
-        int index = prevTween;
+        int index = [prevTweenInQ intValue];
         TexImgPlane* plane = [self.allPlanes objectAtIndex:index];
-        TexImgTween* tween = [self.tweens objectAtIndex:index];
+        TexImgTween* tween = [self.tweens objectAtIndex:index];;
         durationRemaining = tween.duration - totalTimeElapsed;
         float ratio = timeElapsed/durationRemaining;
         ratio = [tweenFunction calculateTweenWithTime:timeElapsed duration:durationRemaining];
         
         
-        [plane updateVerticesWithTween:tween
+        updateDone = [plane updateVerticesWithTween:tween
                                   mode:self.viewType
                   timeElapsed:timeElapsed
                      duration:durationRemaining
                         ratio:ratio];
-        index = index*6;
-        for(int t =0; t < 6; t++){
-            self.planes[index+t].positionCoords = plane.vertices[t];
+        
+      
+        if(!updateDone) {
+            toRemove = index;
+        }else {
+            index = index*6;
+            for(int t =0; t < 6; t++){
+                self.planes[index+t].positionCoords = plane.vertices[t];
+            }
         }
         
-        
     }
+    
+    if(toRemove!=-1){
+        NSString* cKey = [NSString stringWithFormat:@"%d", toRemove];
+        [prevTweens removeObjectForKey:cKey];
+         toRemove = -1;
+    }
+   
     //then deal with current tween
     NSTimeInterval timeElapsed = [self timeSinceLastUpdate];
     int index = currentTween;
@@ -527,7 +534,9 @@
     float ratio = timeElapsed/durationRemaining;
     ratio = [tweenFunction calculateTweenWithTime:timeElapsed duration:durationRemaining];
     
-    [plane updateVerticesWithTween:tween
+    BOOL isUpdated;
+    
+    isUpdated = [plane updateVerticesWithTween:tween
                      mode:self.viewType
               timeElapsed:timeElapsed
                  duration:durationRemaining
@@ -536,6 +545,7 @@
     for(int t =0; t < 6; t++){
         self.planes[index+t].positionCoords = plane.vertices[t];
     }
+
     totalTimeElapsed  += timeElapsed;
 }
 
@@ -644,11 +654,11 @@
 
     NSString *bufferType = [NSString stringWithFormat:@"%d",GLKVertexAttribPosition];
     vertexBuffer = [(GLK2BufferObject*)[drawObject.VAO.VBOs objectForKey:bufferType] glName];
-    NSLog(@"vertex %d", vertexBuffer);
+//    NSLog(@"vertex %d", vertexBuffer);
     
     bufferType = [NSString stringWithFormat:@"%d",GLKVertexAttribColor];
     colorBuffer = [(GLK2BufferObject*)[drawObject.VAO.VBOs objectForKey:bufferType] glName];
-    NSLog(@"vertex %d", colorBuffer);
+//    NSLog(@"vertex %d", colorBuffer);
     
     [self.shapes addObject: drawObject];
     
@@ -658,7 +668,6 @@
 -(void) setDelay:(float) val {
     
     delay = val;
-    
     for(int i=0; i< rows; i++){
         for(int j =0; j < cols; j++) {
             int index = (cols*i+j);
@@ -821,12 +830,6 @@
         //when the user drags from left to right, we actually want to rotate around the y axis (rotY)
 //        NSLog(@"Touch drag ");
         if(touchEnded) return;
-        
-//        moveToPoint = [recognizer locationInView:self.view];
-//        NSLog(@"move %F, %f", moveToPoint.x, moveToPoint.y);
-//
-//        diff.x = moveToPoint.x - startPoint.x;
-//        diff.y = moveToPoint.y - startPoint.y;
 
 //        NSLog(@"%f, %f", diff.x, diff.y);
         modelrotation.x =  currentRotation.x+ (diff.y * 0.01);
@@ -997,13 +1000,12 @@
     if(ind==0) return;
     ind -=1;
     
-    NSLog(@"%d ", ind);
     if(currentTween>-1){
         //current becomes prev and goes back to its original position
         prevTween = currentTween;
-        
         TexImgTween* tweenp = [self.tweens objectAtIndex:prevTween];
         TexImgPlane* planep = [self.allPlanes objectAtIndex:prevTween];
+        tweenp.planeId = prevTween;
         if(self.viewType==WALL)
             tweenp.targetCenter = tweenp.wallCenter;
         else if (self.viewType==GLOBE){
@@ -1013,7 +1015,7 @@
         }
         //add the prev tween to the queue
         NSString* pt= [NSString stringWithFormat:@"%d", prevTween];
-        [prevTweens setObject:tweenp forKey:pt];
+        [prevTweens setObject:pt forKey:pt];
 
     }
     //now deal with the new one
