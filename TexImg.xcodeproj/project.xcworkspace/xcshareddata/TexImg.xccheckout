@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>4CBA30D8-1D4B-4A13-A7D9-512C67D09011</string>
+	<key>IDESourceControlProjectName</key>
+	<string>TexImg</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>542B074E4EF83EA0F61D70C07539776AE4CB4E72</key>
+		<string>https://github.com/awalin/TexImg.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>TexImg.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>542B074E4EF83EA0F61D70C07539776AE4CB4E72</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/awalin/TexImg.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>542B074E4EF83EA0F61D70C07539776AE4CB4E72</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>542B074E4EF83EA0F61D70C07539776AE4CB4E72</string>
+			<key>IDESourceControlWCCName</key>
+			<string>TexImg</string>
+		</dict>
+	</array>
+</dict>
+</plist>

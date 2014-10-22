@@ -81,6 +81,8 @@
 
    UIStoryboard *myStoryboard = [UIStoryboard storyboardWithName:@"main"
                                                            bundle:[NSBundle mainBundle]];
+    
+    
     self.collectionViewController = [myStoryboard instantiateViewControllerWithIdentifier:@"collectionViewController"];
     self.collectionViewController.clearsSelectionOnViewWillAppear = NO;
 
