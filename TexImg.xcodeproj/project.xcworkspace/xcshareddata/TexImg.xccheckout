@@ -14,7 +14,7 @@
 		<string>https://github.com/awalin/TexImg.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>TexImg.xcodeproj/project.xcworkspace</string>
+	<string>TexImg.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>542B074E4EF83EA0F61D70C07539776AE4CB4E72</key>
